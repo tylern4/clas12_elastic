@@ -51,7 +51,8 @@ void Reaction::SetOther(int i) {
 void Reaction::CalcMissMass() {
   auto mm = std::make_unique<TLorentzVector>();
   *mm += (*_gamma + *_target);
-  if (onePositive()) {
+  if (_prot != nullptr) {
+    for (auto& _o : _other) *mm -= *_o;
     *mm -= *_prot;
     _MM = mm->M();
     _MM2 = mm->M2();

@@ -41,18 +41,20 @@ class Histogram {
   TH1D_ptr W_hist_1pos[num_sectors];
   TH1D_ptr W_hist_1pos_0charge[num_sectors];
   TH1D_ptr W_hist_1pos_gpart2[num_sectors];
-  TH1D_ptr W_hist_1pos_at90[num_sectors];
+  TH1D_ptr W_hist_1pos_at90[2][num_sectors];
 
   TH2D_ptr W_vs_q2_all_events[num_sectors];
   TH2D_ptr W_vs_q2_1pos[num_sectors];
   TH2D_ptr W_vs_q2_1pos_0charge[num_sectors];
   TH2D_ptr W_vs_q2_1pos_gpart2[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_at90[num_sectors];
+  TH2D_ptr W_vs_q2_1pos_at90[2][num_sectors];
 
-  TH2D_ptr MomVsBeta[num_sectors];
+  TH2D_ptr MomVsBeta[2][num_sectors];
 
-  TH2D_ptr Phie_vs_Phip[num_sectors];
-  TH1D_ptr Phie_Phip_hist[num_sectors];
+  TH2D_ptr Phie_vs_Phip[2][num_sectors];
+  TH1D_ptr Phie_Phip_hist[2][num_sectors];
+
+  TH1D_ptr MissingMass[num_sectors];
 
  public:
   Histogram(const std::string& output_file);

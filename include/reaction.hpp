@@ -63,9 +63,14 @@ class Reaction {
   inline float W() { return _W; }
   inline float Q2() { return _Q2; }
   inline short sec() { return _data->dc_sec(0); }
-  inline int det() { return abs(_data->status(0) / 1000); }
+  inline short det() { return abs(_data->status(0) / 1000); }
   inline float pos_beta() { return _pos_beta; }
   inline float pos_P() { return _prot->P(); }
+  inline short pos_det() {
+    if (_pos_det == 2) return 0;
+    if (_pos_det == 4) return 1;
+    return -1;
+  }
 
   inline float phi_e() { return _elec->Phi(); }
   inline float phi_p() { return _prot->Phi(); }
@@ -76,9 +81,10 @@ class Reaction {
   }
 
   inline bool onePositive() { return (_hasE && _hasPos); }
-  inline bool onePositive_0Q() { return (_hasE && _hasPos && _total_charge == 0); }
+  inline bool onePositive_MM0() { return (_hasE && _hasPos && abs(MM2()) < 0.1); }
   inline bool onePositive_part2() { return (_hasE && _hasPos && _data->gpart() == 2); }
-  inline bool onePositive_at90() { return (_hasE && _hasPos && _total_charge == 0 && phi_diff_90()); }
+  inline bool onePositive_at90() { return (_hasE && _hasPos && phi_diff_90()); }
+  inline bool onePositive_at90_MM0() { return (_hasE && _hasPos && phi_diff_90() && abs(MM2()) < 0.1); }
 };
 
 #endif

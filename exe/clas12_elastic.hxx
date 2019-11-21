@@ -62,7 +62,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     auto event = std::make_shared<Reaction>(data, beam_energy);
     // For each particle in the event
     for (int part = 1; part < data->gpart(); part++) {
-      if (data->charge(part) == POSITIVE && cuts->IsProton(part)) {
+      if (cuts->IsProton(part)) {
         event->SetPositive(part);
       } else {
         event->SetOther(part);
@@ -70,7 +70,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     }
     // Check the reaction class what kind of even it is and fill the appropriate histograms
     _hists->Fill_WvsQ2(event);
-    if (event->onePositive_at90()) _hists->Fill_MomVsBeta(event);
+    if (event->onePositive_at90_MM0()) _hists->Fill_MomVsBeta(event);
   }
   std::cout << "Percent = " << 100.0 * total / num_of_events << std::endl;
   // Return the total number of events
