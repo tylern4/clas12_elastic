@@ -27,18 +27,18 @@ class Histogram {
   std::shared_ptr<TFile> RootOutputFile;
   std::shared_ptr<TCanvas> def;
 
-  static constexpr int bins = 500;
-  static constexpr double p_min = 0.0;
-  static constexpr double Dt_max = 10.0;
-  static constexpr double Dt_min = -Dt_max;
-  static constexpr double q2_max = 10.6;
-  static constexpr double w_max = 4.5;
-  static constexpr double p_max = 10.6;
+  int bins = 500;
+  double p_min = 0.0;
+  double Dt_max = 10.0;
+  double Dt_min = -Dt_max;
+  double q2_max = 10.6;
+  double w_max = 4.5;
+  double p_max = 10.6;
 
-  static constexpr double zero = 0.0;
-  static constexpr short num_sectors = 7;
+  double zero = 0.0;
+  static const short num_sectors = 7;
 
-  static constexpr short NUM_DIM = 6;
+  static const short NUM_DIM = 6;
   //// W, Q2, missingMass2, phi_diff, sector, detector
   int sparce_bins[NUM_DIM] = {bins, 10, bins, bins, 6, 2};
   double sparce_xmin[NUM_DIM] = {zero, zero, -1.0, 0, 1, 0};

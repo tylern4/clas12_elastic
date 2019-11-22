@@ -10,7 +10,7 @@ Histogram::Histogram(const std::string& output_file) {
   def = std::make_shared<TCanvas>("def");
 
   makeHists();
-  Nsparce = std::make_shared<THnSparseD>("nsparce", "nsparce", NUM_DIM, sparce_bins, sparce_xmin, sparce_xmax);
+  Nsparce = std::make_shared<THnSparseD>("nsparce", "nsparce", 6, sparce_bins, sparce_xmin, sparce_xmax);
 }
 
 Histogram::~Histogram() { this->Write(); }
