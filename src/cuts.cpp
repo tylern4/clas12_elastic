@@ -19,10 +19,10 @@ bool Cuts::ElectronCuts() {
 
   _elec &= (_data->charge(0) == NEGATIVE);
   _elec &= (_data->pid(0) == ELECTRON);
-  //_elec &= (_data->beta(0) > 0.05);
+  _elec &= (_data->beta(0) > 0.05);
   //_elec &= !std::isnan(_data->cc_nphe_tot(0));
-  //_elec &= (_data->ec_tot_energy(0) / _data->p(0) > 0.2);
-  //_elec &= (_data->ec_tot_energy(0) / _data->p(0) < 0.3);
+  _elec &= (_data->ec_tot_energy(0) / _data->p(0) > 0.2);
+  _elec &= (_data->ec_tot_energy(0) / _data->p(0) < 0.3);
 
   return _elec;
 }
@@ -39,9 +39,13 @@ bool Cuts::IsProton(int i) {
   if (_data->gpart() <= i) return false;
   bool _proton = true;
   _proton &= (_data->charge(i) == POSITIVE);
-  _proton &= (abs(_dt->dt_P(i)) < 0.5 || abs(_dt->dt_ctof_P(i)) < 0.2);
+  if (std::isnan(_dt->dt_ctof_P(i)))
+    _proton &= (abs(_dt->dt_P(i)) < 1.0);
+  else
+    _proton &= (abs(_dt->dt_ctof_P(i)) < 1.0);
   return _proton;
 }
+
 bool Cuts::IsPim(int i) {
   if (_data->gpart() <= i) return false;
   bool _pim = true;

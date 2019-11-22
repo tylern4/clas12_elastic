@@ -23,7 +23,6 @@ Reaction::~Reaction() {}
 
 void Reaction::SetElec() {
   _hasE = true;
-  _total_charge += _data->charge(0);
   _elec->SetXYZM(_data->px(0), _data->py(0), _data->pz(0), MASS_E);
 
   *_gamma += *_beam - *_elec;
@@ -34,26 +33,49 @@ void Reaction::SetElec() {
 }
 
 void Reaction::SetPositive(int i) {
-  _total_charge += _data->charge(i);
-  _pos_beta = _data->beta(i);
+  _pos_beta.push_back(_data->beta(i));
   _numPos++;
   _hasPos = true;
-  _pos_det = abs(_data->status(i) / 1000);
-  _prot->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), MASS_P);
+  _pos_det.push_back(abs(_data->status(i) / 1000));
+  _pos.push_back(std::make_unique<TLorentzVector>());
+  _pos.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), MASS_P);
+}
+
+bool Reaction::PosStats() {
+  if (_pos.size() != 2) return false;
+  if (abs(_pos.front()->Phi() - _pos.back()->Phi()) > 0.5) return false;
+  if (abs(_pos.front()->Theta() - _pos.back()->Theta()) > 0.5) return false;
+  if (_pos_det.front() == _pos_det.back()) return false;
+  /*
+  std::cout << "num_pos: " << _pos.size() << std::endl;
+  std::cout << "num_phi: ";
+  for (auto& _d : _pos_det) std::cout << detector_name[_d] << "\t";
+  std::cout << std::endl;
+  std::cout << "pos_phi: ";
+  for (auto& _p : _pos) std::cout << _p->Phi() << "\t";
+  std::cout << std::endl;
+  std::cout << "pos_theta: ";
+  for (auto& _p : _pos) std::cout << _p->Theta() << "\t";
+  std::cout << std::endl;
+  */
+
+  return true;
 }
 
 void Reaction::SetOther(int i) {
-  _total_charge += _data->charge(i);
   _numOther++;
   _hasOther = true;
+  _other.push_back(std::make_unique<TLorentzVector>());
+  _other.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), mass[_data->pid(i)]);
 }
 
 void Reaction::CalcMissMass() {
-  auto mm = std::make_unique<TLorentzVector>();
-  *mm += (*_gamma + *_target);
+  if (_pos.size() > 0) *_prot = *_pos.front();
   if (_prot != nullptr) {
+    auto mm = std::make_unique<TLorentzVector>();
+    *mm += (*_gamma + *_target);
     for (auto& _o : _other) *mm -= *_o;
-    *mm -= *_prot;
+    for (auto& _p : _pos) *mm -= *_p;
     _MM = mm->M();
     _MM2 = mm->M2();
   }

@@ -55,8 +55,6 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
 
     auto cuts = std::make_shared<Cuts>(data);
     if (!cuts->ElectronCuts()) continue;
-    // If we pass electron cuts the event is processed
-    total++;
 
     // Make a reaction class from the data given
     auto event = std::make_shared<Reaction>(data, beam_energy);
@@ -68,7 +66,9 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
         event->SetOther(part);
       }
     }
+    if (event->onePositive_at90_MM0()) total++;
     // Check the reaction class what kind of even it is and fill the appropriate histograms
+    _hists->Fill_Sparce(event);
     _hists->Fill_WvsQ2(event);
     if (event->onePositive_at90_MM0()) _hists->Fill_MomVsBeta(event);
   }
