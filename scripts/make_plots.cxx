@@ -26,6 +26,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
       TLine *r = new TLine(phi_max_cut, 0, phi_max_cut, phi->GetMaximum() * 1.05);
       r->Draw("SAME");
     }
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   {
@@ -41,6 +42,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
       TLine *r = new TLine(MM2_cut, 0, MM2_cut, missingMass2->GetMaximum() * 1.05);
       r->Draw("SAME");
     }
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   for (auto &&det : detector_name) {
@@ -52,6 +54,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
       TH1D *W = (TH1D *)root_data->Get(Form("at180/W_1pos_at180_%s_%d", det.second.c_str(), sec));
       W->Draw("");
     }
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   for (auto &&det : detector_name) {
@@ -63,6 +66,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
       TH1D *W = (TH1D *)root_data->Get(Form("at180_MM/W_1pos_at180_MM_%s_%d", det.second.c_str(), sec));
       W->Draw("");
     }
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   for (auto &&det : detector_name) {
@@ -78,6 +82,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
       TH1D *W = (TH1D *)root_data->Get(Form("at180_MM/W_1pos_at180_MM_%s_%d", det.second.c_str(), sec));
       W->Draw("same");
     }
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   {
@@ -86,12 +91,16 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
     can->cd(1);
     TH2D *MomVsTheta = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_both_0");
     MomVsTheta->Draw("");
-    can->cd(4);
-    TH2D *MomVsTheta_for = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_in_Forward_0");
-    MomVsTheta_for->Draw("");
+    can->cd(2);
+    TH2D *MomVsTheta_lowW = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_lowW_both_0");
+    MomVsTheta_lowW->Draw("");
     can->cd(3);
-    TH2D *MomVsTheta_cent = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_in_Central_0");
+    TH2D *MomVsTheta_cent = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_lowW_in_Central_0");
     MomVsTheta_cent->Draw("");
+    can->cd(4);
+    TH2D *MomVsTheta_for = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_lowW_in_Forward_0");
+    MomVsTheta_for->Draw("");
+    can->SaveAs(Form("%s.png", can->GetName()));
   }
 
   return 0;
