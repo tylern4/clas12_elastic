@@ -74,9 +74,7 @@ class Reaction {
   }
   inline short pos_det() {
     if (_pos_det.size() == 0) return -1;
-    if (_pos_det.front() == 2) return 0;
-    if (_pos_det.front() == 4) return 1;
-    return -1;
+    return detector_fill[_pos_det.front()];
   }
   inline float pos_theta() {
     if (_pos.size() == 0) return NAN;
@@ -89,7 +87,7 @@ class Reaction {
     return _pos.front()->Phi();
   }
   inline float phi_diff() { return abs(_elec->Phi() - phi_p()); }
-  inline bool phi_diff_90() {
+  inline bool phi_diff_180() {
     // Cut around 10% of peak
     if (phi_diff() > (PI * 0.9) && phi_diff() < (PI * 1.1)) return true;
     return false;
@@ -99,8 +97,8 @@ class Reaction {
   inline bool onePositive() { return (_hasE && _hasPos); }
   inline bool onePositive_MM0() { return (onePositive() && MM_cut()); }
   inline bool onePositive_part2() { return (onePositive() && _pos.size() == 1); }
-  inline bool onePositive_at90() { return (onePositive() && phi_diff_90()); }
-  inline bool onePositive_at90_MM0() { return (onePositive_at90() && MM_cut()); }
+  inline bool onePositive_at180() { return (onePositive() && phi_diff_180()); }
+  inline bool onePositive_at180_MM0() { return (onePositive_at180() && MM_cut()); }
 };
 
 #endif

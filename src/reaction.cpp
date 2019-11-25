@@ -74,8 +74,9 @@ void Reaction::CalcMissMass() {
   if (_prot != nullptr) {
     auto mm = std::make_unique<TLorentzVector>();
     *mm += (*_gamma + *_target);
-    for (auto& _o : _other) *mm -= *_o;
-    for (auto& _p : _pos) *mm -= *_p;
+    *mm -= *_prot;
+    // for (auto& _o : _other) *mm -= *_o;
+    // for (auto& _p : _pos) *mm -= *_p;
     _MM = mm->M();
     _MM2 = mm->M2();
   }

@@ -44,30 +44,32 @@ class Histogram {
   double sparce_xmin[NUM_DIM] = {zero, zero, -1.0, 0, 1, 0};
   double sparce_xmax[NUM_DIM] = {w_max, q2_max, 1.0, 2 * PI, 6, 2};
 
+  static const short NUM_DET = 3;
+
   // Kinematics
   TH1D_ptr W_hist_all_events[num_sectors];
   TH1D_ptr W_hist_1pos[num_sectors];
   TH1D_ptr W_hist_1pos_0charge[num_sectors];
   TH1D_ptr W_hist_1pos_gpart2[num_sectors];
-  TH1D_ptr W_hist_1pos_at90[2][num_sectors];
-  TH1D_ptr W_hist_1pos_at90_MM[2][num_sectors];
+  TH1D_ptr W_hist_1pos_at180[NUM_DET][num_sectors];
+  TH1D_ptr W_hist_1pos_at180_MM[NUM_DET][num_sectors];
 
   TH2D_ptr W_vs_q2_all_events[num_sectors];
   TH2D_ptr W_vs_q2_1pos[num_sectors];
   TH2D_ptr W_vs_q2_1pos_0charge[num_sectors];
   TH2D_ptr W_vs_q2_1pos_gpart2[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_at90[2][num_sectors];
-  TH2D_ptr W_vs_q2_1pos_at90_MM[2][num_sectors];
+  TH2D_ptr W_vs_q2_1pos_at180[NUM_DET][num_sectors];
+  TH2D_ptr W_vs_q2_1pos_at180_MM[NUM_DET][num_sectors];
 
-  TH2D_ptr ThetaVsP[2][num_sectors];
-  TH2D_ptr MomVsBeta[2][num_sectors];
+  TH2D_ptr ThetaVsP[NUM_DET][num_sectors];
+  TH2D_ptr MomVsBeta[NUM_DET][num_sectors];
 
-  TH2D_ptr Phie_vs_Phip[2][num_sectors];
-  TH1D_ptr Phie_Phip_hist[2][num_sectors];
+  TH2D_ptr Phie_vs_Phip[NUM_DET][num_sectors];
+  TH1D_ptr Phie_Phip_hist[NUM_DET][num_sectors];
 
   TH1D_ptr MissingMass[num_sectors];
 
-  std::shared_ptr<THnSparse> Nsparce;
+  // std::shared_ptr<THnSparse> Nsparce;
 
  public:
   Histogram(const std::string& output_file);

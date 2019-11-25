@@ -50,6 +50,7 @@ static std::unordered_map<int, double> mass = {
     {PROTON, MASS_P}, {-PROTON, MASS_P}, {NEUTRON, MASS_N}, {PIP, MASS_PIP},    {PIM, MASS_PIM},    {PI0, MASS_PI0},
     {KP, MASS_KP},    {KM, MASS_KM},     {PHOTON, MASS_G},  {ELECTRON, MASS_E}, {-ELECTRON, MASS_E}};
 
-static std::unordered_map<int, std::string> detector_name = {{2, "in_Forward"}, {4, "in_Central"}};
+static std::unordered_map<int, std::string> detector_name = {{0, "either"}, {2, "in_Forward"}, {4, "in_Central"}};
+static std::unordered_map<int, int> detector_fill = {{0, 0}, {2, 1}, {4, 2}};
 
 #endif
