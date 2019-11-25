@@ -56,7 +56,7 @@ void Histogram::makeHists() {
 
       ThetaVsP[d][sec] =
           std::make_shared<TH2D>(Form("MomVsTheta_pos_%s_%d", det.second.c_str(), sec),
-                                 Form("MomVsTheta_pos_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 0, PI / 2);
+                                 Form("MomVsTheta_pos_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 0, 90);
       MomVsBeta[d][sec] =
           std::make_shared<TH2D>(Form("MomVsBeta_%s_%d", det.second.c_str(), sec),
                                  Form("MomVsBeta_%s_%d", det.second.c_str(), sec), 500, zero, p_max, 500, zero, 1.2);
@@ -236,6 +236,7 @@ void Histogram::Write_WvsQ2() {
 }
 
 void Histogram::Fill_MomVsBeta(const std::shared_ptr<Reaction>& _e) {
+  if (!_e->onePositive_at180()) return;
   MomVsBeta[0][0]->Fill(_e->pos_P(), _e->pos_beta());
   MomVsBeta[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_beta());
 

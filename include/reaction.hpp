@@ -78,7 +78,7 @@ class Reaction {
   }
   inline float pos_theta() {
     if (_pos.size() == 0) return NAN;
-    return _pos.front()->Theta();
+    return _pos.front()->Theta() * RAD2DEG;
   }
 
   inline float phi_e() { return _elec->Phi(); }
