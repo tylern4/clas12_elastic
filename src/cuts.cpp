@@ -40,7 +40,7 @@ bool Cuts::IsProton(int i) {
   bool _proton = true;
   _proton &= (_data->charge(i) == POSITIVE);
   if (!std::isnan(_dt->dt_P(i))) _proton &= (abs(_dt->dt_P(i)) < 0.5);
-  if (!std::isnan(_dt->dt_ctof_P(i))) _proton &= (abs(_dt->dt_ctof_P(i)) < 0.2);
+  // if (!std::isnan(_dt->dt_ctof_P(i))) _proton &= (abs(_dt->dt_ctof_P(i)) < 0.2);
   return _proton;
 }
 

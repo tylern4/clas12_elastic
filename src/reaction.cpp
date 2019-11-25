@@ -65,6 +65,7 @@ bool Reaction::PosStats() {
 void Reaction::SetOther(int i) {
   _numOther++;
   _hasOther = true;
+  if (_data->charge(i) == 0) return;
   _other.push_back(std::make_unique<TLorentzVector>());
   _other.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), mass[_data->pid(i)]);
 }

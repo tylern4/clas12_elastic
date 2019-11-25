@@ -50,14 +50,14 @@ class Histogram {
   TH1D_ptr W_hist_all_events[num_sectors];
   TH1D_ptr W_hist_1pos[num_sectors];
   TH1D_ptr W_hist_1pos_0charge[num_sectors];
-  TH1D_ptr W_hist_1pos_gpart2[num_sectors];
+  TH1D_ptr W_hist_1pos_noOther[num_sectors];
   TH1D_ptr W_hist_1pos_at180[NUM_DET][num_sectors];
   TH1D_ptr W_hist_1pos_at180_MM[NUM_DET][num_sectors];
 
   TH2D_ptr W_vs_q2_all_events[num_sectors];
   TH2D_ptr W_vs_q2_1pos[num_sectors];
   TH2D_ptr W_vs_q2_1pos_0charge[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_gpart2[num_sectors];
+  TH2D_ptr W_vs_q2_1pos_noOther[num_sectors];
   TH2D_ptr W_vs_q2_1pos_at180[NUM_DET][num_sectors];
   TH2D_ptr W_vs_q2_1pos_at180_MM[NUM_DET][num_sectors];
 

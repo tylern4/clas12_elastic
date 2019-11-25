@@ -14,7 +14,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
   TFile *root_data = new TFile(inFileName.c_str());
 
   for (auto &&det : detector_name) {
-    TCanvas *can = new TCanvas(Form("Phi_%s", det.second.c_str()), Form("Phi_%s", det.second.c_str()), 1600, 800);
+    TCanvas *can = new TCanvas(Form("Phi_%s", det.second.c_str()), Form("Phi_%s", det.second.c_str()), 1920, 1080);
     can->Divide(3, 2);
     for (int sec = 1; sec < 7; sec++) {
       can->cd(sec);
@@ -30,7 +30,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
   }
 
   {
-    TCanvas *can = new TCanvas("MissingMass", "MissingMass", 1600, 800);
+    TCanvas *can = new TCanvas("MissingMass", "MissingMass", 1920, 1080);
     can->Divide(3, 2);
     for (int sec = 1; sec < 7; sec++) {
       can->cd(sec);
@@ -47,7 +47,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
 
   for (auto &&det : detector_name) {
     TCanvas *can =
-        new TCanvas(Form("W_at180_%s", det.second.c_str()), Form("W_at180_%s", det.second.c_str()), 1600, 800);
+        new TCanvas(Form("W_at180_%s", det.second.c_str()), Form("W_at180_%s", det.second.c_str()), 1920, 1080);
     can->Divide(3, 2);
     for (int sec = 1; sec < 7; sec++) {
       can->cd(sec);
@@ -59,7 +59,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
 
   for (auto &&det : detector_name) {
     TCanvas *can =
-        new TCanvas(Form("W_at180_MM_%s", det.second.c_str()), Form("W_at180_MM_%s", det.second.c_str()), 1600, 800);
+        new TCanvas(Form("W_at180_MM_%s", det.second.c_str()), Form("W_at180_MM_%s", det.second.c_str()), 1920, 1080);
     can->Divide(3, 2);
     for (int sec = 1; sec < 7; sec++) {
       can->cd(sec);
@@ -71,13 +71,17 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
 
   for (auto &&det : detector_name) {
     TCanvas *can = new TCanvas(Form("W_at180_MMvsWo_%s", det.second.c_str()),
-                               Form("W_at180_MMvsWo_%s", det.second.c_str()), 1600, 800);
+                               Form("W_at180_MMvsWo_%s", det.second.c_str()), 1920, 1080);
     can->Divide(3, 2);
     for (int sec = 1; sec < 7; sec++) {
       can->cd(sec);
-      TH1D *W_wo = (TH1D *)root_data->Get(Form("at180/W_1pos_at180_%s_%d", det.second.c_str(), sec));
-      W_wo->SetLineColor(kRed);
-      W_wo->Draw("same");
+      // TH1D *W_wo = (TH1D *)root_data->Get(Form("at180/W_1pos_at180_%s_%d", det.second.c_str(), sec));
+      // W_wo->SetLineColor(kRed);
+      // W_wo->Draw("same");
+
+      TH1D *W_noOther = (TH1D *)root_data->Get(Form("at180_MM/W_1pos_at180_MM_noOther_%s_%d", det.second.c_str(), sec));
+      W_noOther->SetLineColor(kGreen);
+      W_noOther->Draw("same");
 
       TH1D *W = (TH1D *)root_data->Get(Form("at180_MM/W_1pos_at180_MM_%s_%d", det.second.c_str(), sec));
       W->Draw("same");
@@ -86,7 +90,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
   }
 
   {
-    TCanvas *can = new TCanvas("MomVsTheta", "MomVsTheta", 1600, 800);
+    TCanvas *can = new TCanvas("MomVsTheta", "MomVsTheta", 1920, 1080);
     can->Divide(2, 2);
     can->cd(1);
     TH2D *MomVsTheta = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_both_0");

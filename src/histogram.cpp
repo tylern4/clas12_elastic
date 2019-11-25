@@ -40,8 +40,8 @@ void Histogram::makeHists() {
         std::make_shared<TH1D>(Form("W_hist_1pos_%d", sec), Form("W_hist_1pos_%d", sec), bins, zero, w_max);
     W_hist_1pos_0charge[sec] =
         std::make_shared<TH1D>(Form("W_hist_1pos_MM0_%d", sec), Form("W_hist_1pos_MM0_%d", sec), bins, zero, w_max);
-    W_hist_1pos_gpart2[sec] =
-        std::make_shared<TH1D>(Form("W_hist_1pos_part2_%d", sec), Form("W_hist_1pos_part2_%d", sec), bins, zero, w_max);
+    W_hist_1pos_noOther[sec] = std::make_shared<TH1D>(Form("W_hist_1pos_noOther_%d", sec),
+                                                      Form("W_hist_1pos_noOther_%d", sec), bins, zero, w_max);
 
     W_vs_q2_all_events[sec] =
         std::make_shared<TH2D>(Form("WQ2_sec_%d", sec), Form("WQ2_sec_%d", sec), bins, zero, w_max, bins, zero, q2_max);
@@ -49,8 +49,8 @@ void Histogram::makeHists() {
                                                bins, zero, q2_max);
     W_vs_q2_1pos_0charge[sec] = std::make_shared<TH2D>(Form("WQ2_1pos_MM0_%d", sec), Form("WQ2_1pos_MM0_%d", sec), bins,
                                                        zero, w_max, bins, zero, q2_max);
-    W_vs_q2_1pos_gpart2[sec] = std::make_shared<TH2D>(Form("WQ2_1pos_part2_%d", sec), Form("WQ2_1pos_part2_%d", sec),
-                                                      bins, zero, w_max, bins, zero, q2_max);
+    W_vs_q2_1pos_noOther[sec] = std::make_shared<TH2D>(
+        Form("WQ2_1pos_noOther_%d", sec), Form("WQ2_1pos_noOther_%d", sec), bins, zero, w_max, bins, zero, q2_max);
     for (auto&& det : detector_name) {
       int d = detector_fill[det.first];
 
@@ -126,11 +126,11 @@ void Histogram::Fill_WvsQ2(const std::shared_ptr<Reaction>& _e) {
       W_hist_1pos_0charge[sec]->Fill(_e->W());
       W_vs_q2_1pos_0charge[sec]->Fill(_e->W(), _e->Q2());
     }
-    if (_e->onePositive_part2()) {
-      W_hist_1pos_gpart2[0]->Fill(_e->W());
-      W_vs_q2_1pos_gpart2[0]->Fill(_e->W(), _e->Q2());
-      W_hist_1pos_gpart2[sec]->Fill(_e->W());
-      W_vs_q2_1pos_gpart2[sec]->Fill(_e->W(), _e->Q2());
+    if (_e->onePositive_noOther()) {
+      W_hist_1pos_noOther[0]->Fill(_e->W());
+      W_vs_q2_1pos_noOther[0]->Fill(_e->W(), _e->Q2());
+      W_hist_1pos_noOther[sec]->Fill(_e->W());
+      W_vs_q2_1pos_noOther[sec]->Fill(_e->W(), _e->Q2());
     }
     if (_e->onePositive_at180()) {
       MissingMass[0]->Fill(_e->MM2());
@@ -218,8 +218,8 @@ void Histogram::Write_WvsQ2() {
     W_hist_1pos[i]->Write();
     W_hist_1pos_0charge[i]->SetXTitle("W (GeV)");
     W_hist_1pos_0charge[i]->Write();
-    W_hist_1pos_gpart2[i]->SetXTitle("W (GeV)");
-    W_hist_1pos_gpart2[i]->Write();
+    W_hist_1pos_noOther[i]->SetXTitle("W (GeV)");
+    W_hist_1pos_noOther[i]->Write();
 
     W_vs_q2_all_events[i]->SetXTitle("W (GeV)");
     W_vs_q2_all_events[i]->SetYTitle("Q^2 (GeV^2)");
@@ -236,10 +236,10 @@ void Histogram::Write_WvsQ2() {
     W_vs_q2_1pos_0charge[i]->SetOption("COLZ");
     W_vs_q2_1pos_0charge[i]->Write();
 
-    W_vs_q2_1pos_gpart2[i]->SetXTitle("W (GeV)");
-    W_vs_q2_1pos_gpart2[i]->SetYTitle("Q^2 (GeV^2)");
-    W_vs_q2_1pos_gpart2[i]->SetOption("COLZ");
-    W_vs_q2_1pos_gpart2[i]->Write();
+    W_vs_q2_1pos_noOther[i]->SetXTitle("W (GeV)");
+    W_vs_q2_1pos_noOther[i]->SetYTitle("Q^2 (GeV^2)");
+    W_vs_q2_1pos_noOther[i]->SetOption("COLZ");
+    W_vs_q2_1pos_noOther[i]->Write();
   }
 }
 

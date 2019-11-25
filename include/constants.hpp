@@ -52,6 +52,8 @@ static std::unordered_map<int, double> mass = {
     {KP, MASS_KP},    {KM, MASS_KM},     {PHOTON, MASS_G},  {ELECTRON, MASS_E}, {-ELECTRON, MASS_E}};
 
 static std::unordered_map<int, std::string> detector_name = {{0, "both"}, {2, "in_Forward"}, {4, "in_Central"}};
+static std::unordered_map<int, std::string> cut_names = {
+    {0, "all"}, {1, "1pos"}, {2, "1pos_at180"}, {3, "1pos_MM"}, {4, "1pos_at180_MM"}};
 static std::unordered_map<int, int> detector_fill = {{0, 0}, {2, 1}, {4, 2}};
 
 static const float phi_min_cut = 3.08;

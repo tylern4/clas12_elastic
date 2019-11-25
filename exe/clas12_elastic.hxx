@@ -66,7 +66,8 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
         event->SetOther(part);
       }
     }
-    if (event->onePositive_at180()) total++;
+
+    if (event->onePositive_at180_MM0()) total++;
     _hists->Fill_WvsQ2(event);
     _hists->Fill_MomVsBeta(event);
   }
