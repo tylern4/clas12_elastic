@@ -50,8 +50,8 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     // Get current event
     _chain->GetEntry(current_event);
     // If we are the 0th thread print the progress of the thread every 1000 events
-    if (thread_id == 0 && current_event % 1000 == 0)
-      std::cout << "\t" << (100 * current_event / num_of_events) << " %\r" << std::flush;
+    if (thread_id == 0 && current_event % 10000 == 0)
+      std::cerr << "\t" << (100 * current_event / num_of_events) << " %\r" << std::flush;
 
     auto cuts = std::make_shared<Cuts>(data);
     if (!cuts->ElectronCuts()) continue;
@@ -68,7 +68,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     }
     if (event->onePositive_at180_MM0()) total++;
     // Check the reaction class what kind of even it is and fill the appropriate histograms
-    _hists->Fill_Sparce(event);
+    //_hists->Fill_Sparce(event);
     _hists->Fill_WvsQ2(event);
     if (event->onePositive_at180_MM0()) _hists->Fill_MomVsBeta(event);
   }

@@ -19,15 +19,15 @@ void Histogram::Write() {
   std::cout << GREEN << "Writting" << DEF << std::endl;
   // Nsparce->Sumw2();
   // Nsparce->Write();
-  std::cerr << BOLDBLUE << "WvsQ2()" << DEF << std::endl;
+  std::cout << BOLDBLUE << "WvsQ2()" << DEF << std::endl;
   Write_WvsQ2();
 
-  std::cerr << BOLDBLUE << "Write_MomVsBeta()" << DEF << std::endl;
+  std::cout << BOLDBLUE << "Write_MomVsBeta()" << DEF << std::endl;
   TDirectory* Write_MomVsBeta_folder = RootOutputFile->mkdir("Mom Vs Beta");
   Write_MomVsBeta_folder->cd();
   Write_MomVsBeta();
 
-  std::cerr << BOLDBLUE << "Done Writing!!!" << DEF << std::endl;
+  std::cout << BOLDBLUE << "Done Writing!!!" << DEF << std::endl;
 }
 
 void Histogram::makeHists() {
@@ -101,12 +101,6 @@ void Histogram::Fill_WvsQ2(const std::shared_ptr<Reaction>& _e) {
       W_vs_q2_1pos[0]->Fill(_e->W(), _e->Q2());
       W_hist_1pos[sec]->Fill(_e->W());
       W_vs_q2_1pos[sec]->Fill(_e->W(), _e->Q2());
-    }
-    if (_e->onePositive_MM0()) {
-      W_hist_1pos_0charge[0]->Fill(_e->W());
-      W_vs_q2_1pos_0charge[0]->Fill(_e->W(), _e->Q2());
-      W_hist_1pos_0charge[sec]->Fill(_e->W());
-      W_vs_q2_1pos_0charge[sec]->Fill(_e->W(), _e->Q2());
 
       Phie_vs_Phip[0][0]->Fill(_e->phi_e(), _e->phi_p());
       Phie_Phip_hist[0][0]->Fill(_e->phi_diff());
@@ -117,6 +111,12 @@ void Histogram::Fill_WvsQ2(const std::shared_ptr<Reaction>& _e) {
       Phie_Phip_hist[pos_det][0]->Fill(_e->phi_diff());
       Phie_vs_Phip[pos_det][sec]->Fill(_e->phi_e(), _e->phi_p());
       Phie_Phip_hist[pos_det][sec]->Fill(_e->phi_diff());
+    }
+    if (_e->onePositive_MM0()) {
+      W_hist_1pos_0charge[0]->Fill(_e->W());
+      W_vs_q2_1pos_0charge[0]->Fill(_e->W(), _e->Q2());
+      W_hist_1pos_0charge[sec]->Fill(_e->W());
+      W_vs_q2_1pos_0charge[sec]->Fill(_e->W(), _e->Q2());
     }
     if (_e->onePositive_part2()) {
       W_hist_1pos_gpart2[0]->Fill(_e->W());

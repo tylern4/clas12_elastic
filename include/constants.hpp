@@ -53,4 +53,8 @@ static std::unordered_map<int, double> mass = {
 static std::unordered_map<int, std::string> detector_name = {{0, "either"}, {2, "in_Forward"}, {4, "in_Central"}};
 static std::unordered_map<int, int> detector_fill = {{0, 0}, {2, 1}, {4, 2}};
 
+static const float phi_min_cut = 3.08;
+static const float phi_max_cut = 3.2;
+static const float MM2_cut = 0.2;
+
 #endif

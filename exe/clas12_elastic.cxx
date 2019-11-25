@@ -5,6 +5,7 @@
 int main(int argc, char** argv) {
   // Need this to make sure root doesn't break
   ROOT::EnableThreadSafety();
+  std::ios::sync_with_stdio(false);
 
   int NUM_THREADS = 2;
   if (getenv("NUM_THREADS") != NULL) NUM_THREADS = atoi(getenv("NUM_THREADS"));
