@@ -84,7 +84,7 @@ int make_plots(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.
     TCanvas *can = new TCanvas("MomVsTheta", "MomVsTheta", 1600, 800);
     can->Divide(2, 2);
     can->cd(1);
-    TH2D *MomVsTheta = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_either_0");
+    TH2D *MomVsTheta = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_both_0");
     MomVsTheta->Draw("");
     can->cd(4);
     TH2D *MomVsTheta_for = (TH2D *)root_data->Get("Mom Vs Beta/MomVsTheta_pos_in_Forward_0");

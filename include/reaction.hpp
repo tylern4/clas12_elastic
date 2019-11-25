@@ -81,6 +81,17 @@ class Reaction {
     return _pos.front()->Theta() * RAD2DEG;
   }
 
+  inline float pos_theta_calc() {
+    if (_pos.size() == 0) return NAN;
+    double v = _elec->P() / _elec->M();
+    double num = v * sin(_elec->Theta());
+    double den = (v * cos(_elec->Theta()) - v);
+
+    // std::cout << -(atan(num / den) * RAD2DEG) << std::endl;
+
+    return -(atan(num / den) * RAD2DEG);
+  }
+
   inline float phi_e() { return _elec->Phi(); }
   inline float phi_p() {
     if (_pos.size() == 0) return NAN;

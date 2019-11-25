@@ -62,6 +62,8 @@ class Histogram {
   TH2D_ptr W_vs_q2_1pos_at180_MM[NUM_DET][num_sectors];
 
   TH2D_ptr ThetaVsP[NUM_DET][num_sectors];
+  TH2D_ptr ThetaVsPCalc[NUM_DET][num_sectors];
+  TH2D_ptr ThetaVsP_lowW[NUM_DET][num_sectors];
   TH2D_ptr MomVsBeta[NUM_DET][num_sectors];
 
   TH2D_ptr Phie_vs_Phip[NUM_DET][num_sectors];

@@ -57,6 +57,14 @@ void Histogram::makeHists() {
       ThetaVsP[d][sec] =
           std::make_shared<TH2D>(Form("MomVsTheta_pos_%s_%d", det.second.c_str(), sec),
                                  Form("MomVsTheta_pos_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 0, 90);
+
+      ThetaVsP_lowW[d][sec] =
+          std::make_shared<TH2D>(Form("MomVsTheta_lowW_%s_%d", det.second.c_str(), sec),
+                                 Form("MomVsTheta_lowW_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 0, 90);
+
+      ThetaVsPCalc[d][sec] =
+          std::make_shared<TH2D>(Form("MomVsTheta_Calc_%s_%d", det.second.c_str(), sec),
+                                 Form("MomVsTheta_Calc_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 60, 90);
       MomVsBeta[d][sec] =
           std::make_shared<TH2D>(Form("MomVsBeta_%s_%d", det.second.c_str(), sec),
                                  Form("MomVsBeta_%s_%d", det.second.c_str(), sec), 500, zero, p_max, 500, zero, 1.2);
@@ -237,18 +245,31 @@ void Histogram::Write_WvsQ2() {
 
 void Histogram::Fill_MomVsBeta(const std::shared_ptr<Reaction>& _e) {
   if (!_e->onePositive_at180()) return;
+  if (_e->pos_det() == -1) return;
+
   MomVsBeta[0][0]->Fill(_e->pos_P(), _e->pos_beta());
   MomVsBeta[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_beta());
 
   ThetaVsP[0][0]->Fill(_e->pos_P(), _e->pos_theta());
   ThetaVsP[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta());
 
-  if (_e->pos_det() == -1) return;
+  ThetaVsPCalc[0][0]->Fill(_e->pos_P(), _e->pos_theta_calc());
+  ThetaVsPCalc[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta_calc());
+
   MomVsBeta[_e->pos_det()][0]->Fill(_e->pos_P(), _e->pos_beta());
   MomVsBeta[_e->pos_det()][_e->sec()]->Fill(_e->pos_P(), _e->pos_beta());
 
   ThetaVsP[_e->pos_det()][0]->Fill(_e->pos_P(), _e->pos_theta());
   ThetaVsP[_e->pos_det()][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta());
+
+  ThetaVsPCalc[_e->pos_det()][0]->Fill(_e->pos_P(), _e->pos_theta_calc());
+  ThetaVsPCalc[_e->pos_det()][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta_calc());
+  if (_e->W() < 2.0) {
+    ThetaVsP_lowW[0][0]->Fill(_e->pos_P(), _e->pos_theta());
+    ThetaVsP_lowW[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta());
+    ThetaVsP_lowW[_e->pos_det()][0]->Fill(_e->pos_P(), _e->pos_theta());
+    ThetaVsP_lowW[_e->pos_det()][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta());
+  }
 }
 
 void Histogram::Write_MomVsBeta() {
@@ -264,6 +285,18 @@ void Histogram::Write_MomVsBeta() {
       ThetaVsP[i][p]->SetYTitle("#theta");
       ThetaVsP[i][p]->SetOption("COLZ1");
       ThetaVsP[i][p]->Write();
+    }
+    for (short p = 0; p < num_sectors; p++) {
+      ThetaVsP_lowW[i][p]->SetXTitle("Momentum (GeV)");
+      ThetaVsP_lowW[i][p]->SetYTitle("#theta");
+      ThetaVsP_lowW[i][p]->SetOption("COLZ1");
+      ThetaVsP_lowW[i][p]->Write();
+    }
+    for (short p = 0; p < num_sectors; p++) {
+      ThetaVsPCalc[i][p]->SetXTitle("Momentum (GeV)");
+      ThetaVsPCalc[i][p]->SetYTitle("#theta");
+      ThetaVsPCalc[i][p]->SetOption("COLZ1");
+      ThetaVsPCalc[i][p]->Write();
     }
   }
 }
