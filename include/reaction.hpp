@@ -100,10 +100,10 @@ class Reaction {
   inline float phi_diff() { return abs(_elec->Phi() - phi_p()); }
   inline bool phi_diff_180() {
     // Cut around 10% of peak
-    if (phi_diff() > (PI * 0.995) && phi_diff() < (PI * 1.005)) return true;
+    if (phi_diff() > phi_min_cut && phi_diff() < phi_max_cut) return true;
     return false;
   }
-  inline bool MM_cut() { return abs(MM2()) < 0.2; }
+  inline bool MM_cut() { return abs(MM2()) < MM2_cut; }
 
   inline bool onePositive() { return (_hasE && _hasPos && _pos.size() == 1); }
   inline bool onePositive_noOther() { return (onePositive() && _other.size() == 0); }

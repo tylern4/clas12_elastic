@@ -87,6 +87,8 @@ float Delta_T::dt_P(int i) {
   this->dt_calc(i);
   return _deltat(PROTON);
 }
+float Delta_T::mom(int i) { return _data->p(i); }
+
 float Delta_T::dt_Pi(int i) {
   this->dt_calc(i);
   return _deltat(PIP);

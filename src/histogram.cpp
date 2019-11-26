@@ -10,7 +10,7 @@ Histogram::Histogram(const std::string& output_file) {
   def = std::make_shared<TCanvas>("def");
 
   makeHists();
-  // Nsparce = std::make_shared<THnSparseD>("nsparce", "nsparce", 6, sparce_bins, sparce_xmin, sparce_xmax);
+  Nsparce = std::make_shared<THnSparseD>("nsparce", "nsparce", 3, sparce_bins, sparce_xmin, sparce_xmax);
 }
 
 Histogram::~Histogram() { this->Write(); }
@@ -18,7 +18,7 @@ Histogram::~Histogram() { this->Write(); }
 void Histogram::Write() {
   std::cout << GREEN << "Writting" << DEF << std::endl;
   // Nsparce->Sumw2();
-  // Nsparce->Write();
+  Nsparce->Write();
   std::cout << BOLDBLUE << "WvsQ2()" << DEF << std::endl;
   Write_WvsQ2();
 
@@ -26,14 +26,20 @@ void Histogram::Write() {
   TDirectory* Write_MomVsBeta_folder = RootOutputFile->mkdir("Mom Vs Beta");
   Write_MomVsBeta_folder->cd();
   Write_MomVsBeta();
+  deltaT_proton[0]->Write();
+  deltaT_proton[1]->Write();
 
   std::cout << BOLDBLUE << "Done Writing!!!" << DEF << std::endl;
 }
 
 void Histogram::makeHists() {
+  deltaT_proton[0] = std::make_shared<TH2D>("DeltaTProton", "DeltaTProton", bins, zero, 10, bins, -5, 5);
+  deltaT_proton[1] = std::make_shared<TH2D>("DeltaTProton_cut", "DeltaTProton_cut", bins, zero, 10, bins, -5, 5);
+
   for (short sec = 0; sec < num_sectors; sec++) {
     MissingMass[sec] =
         std::make_shared<TH1D>(Form("MM2_hist_sec_%d", sec), Form("MM2_hist_sec_%d", sec), bins, -w_max, w_max);
+
     W_hist_all_events[sec] =
         std::make_shared<TH1D>(Form("W_hist_sec_%d", sec), Form("W_hist_sec_%d", sec), bins, zero, w_max);
     W_hist_1pos[sec] =
@@ -91,9 +97,9 @@ void Histogram::makeHists() {
 }
 
 void Histogram::Fill_Sparce(const std::shared_ptr<Reaction>& _e) {
-  // std::lock_guard<std::mutex> lk(mutex);
-  // double ret[NUM_DIM] = {_e->W(), _e->Q2(), _e->MM2(), _e->phi_diff(), static_cast<double>(_e->sec()),
-  // static_cast<double>(_e->pos_det())}; Nsparce->Fill(ret);
+  std::lock_guard<std::mutex> lk(mutex);
+  double ret[NUM_DIM] = {_e->W(), _e->Q2(), static_cast<double>(_e->sec())};
+  Nsparce->Fill(ret);
 }
 void Histogram::Fill_WvsQ2(const std::shared_ptr<Reaction>& _e) {
   short sec = _e->sec();
@@ -299,4 +305,14 @@ void Histogram::Write_MomVsBeta() {
       ThetaVsPCalc[i][p]->Write();
     }
   }
+}
+
+void Histogram::Fill_Dt(const std::shared_ptr<Delta_T>& dt) {
+  for (int i = 0; i < dt->gpart(); i++) {
+    if (dt->charge(i) == 1) deltaT_proton[0]->Fill(dt->mom(i), dt->dt_P(i));
+  }
+}
+
+void Histogram::Fill_Dt(const std::shared_ptr<Delta_T>& dt, int part) {
+  deltaT_proton[1]->Fill(dt->mom(part), dt->dt_P(part));
 }

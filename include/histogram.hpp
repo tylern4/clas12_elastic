@@ -38,11 +38,11 @@ class Histogram {
   double zero = 0.0;
   static const short num_sectors = 7;
 
-  static const short NUM_DIM = 6;
-  //// W, Q2, missingMass2, phi_diff, sector, detector
-  int sparce_bins[NUM_DIM] = {bins, 10, bins, bins, 6, 2};
-  double sparce_xmin[NUM_DIM] = {zero, zero, -1.0, 0, 1, 0};
-  double sparce_xmax[NUM_DIM] = {w_max, q2_max, 1.0, 2 * PI, 6, 2};
+  static const short NUM_DIM = 3;
+  //// W, Q2, sector
+  int sparce_bins[NUM_DIM] = {bins, 10, 7};
+  double sparce_xmin[NUM_DIM] = {zero, zero, 0};
+  double sparce_xmax[NUM_DIM] = {w_max, q2_max, 6};
 
   static const short NUM_DET = 3;
 
@@ -71,7 +71,9 @@ class Histogram {
 
   TH1D_ptr MissingMass[num_sectors];
 
-  // std::shared_ptr<THnSparse> Nsparce;
+  TH2D_ptr deltaT_proton[2];
+
+  std::shared_ptr<THnSparse> Nsparce;
 
  public:
   Histogram(const std::string& output_file);
@@ -87,6 +89,8 @@ class Histogram {
   void Write_MomVsBeta();
 
   void Fill_Sparce(const std::shared_ptr<Reaction>& _e);
+  void Fill_Dt(const std::shared_ptr<Delta_T>& dt);
+  void Fill_Dt(const std::shared_ptr<Delta_T>& dt, int part);
 
   //
   void Write();

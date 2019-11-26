@@ -39,6 +39,8 @@ class Delta_T {
   ~Delta_T();
 
   void dt_calc(int i);
+  inline int gpart() { return _data->gpart(); }
+  inline int charge(int part) { return _data->charge(part); }
 
   float dt_E(int i);
   float dt_P(int i);
@@ -49,6 +51,7 @@ class Delta_T {
   float dt_Pi();
   float dt_K();
   float dt(int pid);
+  float mom(int i);
 
   float dt_ctof_E(int i);
   float dt_ctof_P(int i);

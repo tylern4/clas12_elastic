@@ -53,21 +53,26 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     if (thread_id == 0 && current_event % 10000 == 0)
       std::cerr << "\t" << (100 * current_event / num_of_events) << " %\r" << std::flush;
 
-    auto cuts = std::make_shared<Cuts>(data);
+    auto dt = std::make_shared<Delta_T>(data);
+    auto cuts = std::make_shared<Cuts>(data, dt);
     if (!cuts->ElectronCuts()) continue;
-
+    _hists->Fill_Dt(dt);
     // Make a reaction class from the data given
     auto event = std::make_shared<Reaction>(data, beam_energy);
     // For each particle in the event
     for (int part = 1; part < data->gpart(); part++) {
       if (cuts->IsProton(part)) {
         event->SetPositive(part);
+        _hists->Fill_Dt(dt, part);
       } else {
         event->SetOther(part);
       }
     }
 
-    if (event->onePositive_at180_MM0()) total++;
+    if (event->onePositive_at180_MM0()) {
+      total++;
+      _hists->Fill_Sparce(event);
+    }
     _hists->Fill_WvsQ2(event);
     _hists->Fill_MomVsBeta(event);
   }
