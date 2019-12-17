@@ -17,6 +17,7 @@ Histogram::~Histogram() { this->Write(); }
 
 void Histogram::Write() {
   std::cout << GREEN << "Writting" << DEF << std::endl;
+  Write_SF();
   // Nsparce->Sumw2();
   Nsparce->Write();
   std::cout << BOLDBLUE << "WvsQ2()" << DEF << std::endl;
@@ -39,6 +40,11 @@ void Histogram::makeHists() {
   for (short sec = 0; sec < num_sectors; sec++) {
     MissingMass[sec] =
         std::make_shared<TH1D>(Form("MM2_hist_sec_%d", sec), Form("MM2_hist_sec_%d", sec), bins, -w_max, w_max);
+
+    mass_pi0_hist[0][sec] =
+        std::make_shared<TH1D>(Form("mass_pi0_hist_%d", sec), Form("mass_pi0_hist_%d", sec), bins, 0, 0.5);
+    mass_pi0_hist[1][sec] = std::make_shared<TH1D>(Form("mass_pi0_hist_aferPcuts_%d", sec),
+                                                   Form("mass_pi0_hist_aferPcuts_%d", sec), bins, 0, 0.5);
 
     W_hist_all_events[sec] =
         std::make_shared<TH1D>(Form("W_hist_sec_%d", sec), Form("W_hist_sec_%d", sec), bins, zero, w_max);
@@ -70,7 +76,7 @@ void Histogram::makeHists() {
 
       ThetaVsPCalc[d][sec] =
           std::make_shared<TH2D>(Form("MomVsTheta_Calc_%s_%d", det.second.c_str(), sec),
-                                 Form("MomVsTheta_Calc_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 60, 90);
+                                 Form("MomVsTheta_Calc_%s_%d", det.second.c_str(), sec), 500, zero, 6.0, 500, 0, 90);
       MomVsBeta[d][sec] =
           std::make_shared<TH2D>(Form("MomVsBeta_%s_%d", det.second.c_str(), sec),
                                  Form("MomVsBeta_%s_%d", det.second.c_str(), sec), 500, zero, p_max, 500, zero, 1.2);
@@ -95,6 +101,12 @@ void Histogram::makeHists() {
     }
   }
 }
+
+void Histogram::Fill_SF(const std::shared_ptr<Branches12>& _d) {
+  sf_hist->Fill(_d->p(0), _d->ec_tot_energy(0) / _d->p(0));
+}
+
+void Histogram::Write_SF() { sf_hist->Write(); }
 
 void Histogram::Fill_Sparce(const std::shared_ptr<Reaction>& _e) {
   std::lock_guard<std::mutex> lk(mutex);
@@ -218,6 +230,12 @@ void Histogram::Write_WvsQ2() {
     MissingMass[i]->SetXTitle("MM^2 (GeV)");
     MissingMass[i]->Write();
 
+    mass_pi0_hist[0][i]->SetXTitle("MM(GeV)");
+    mass_pi0_hist[0][i]->Write();
+
+    mass_pi0_hist[1][i]->SetXTitle("MM(GeV)");
+    mass_pi0_hist[1][i]->Write();
+
     W_hist_all_events[i]->SetXTitle("W (GeV)");
     W_hist_all_events[i]->Write();
     W_hist_1pos[i]->SetXTitle("W (GeV)");
@@ -270,6 +288,7 @@ void Histogram::Fill_MomVsBeta(const std::shared_ptr<Reaction>& _e) {
 
   ThetaVsPCalc[_e->pos_det()][0]->Fill(_e->pos_P(), _e->pos_theta_calc());
   ThetaVsPCalc[_e->pos_det()][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta_calc());
+
   if (_e->W() < 2.0) {
     ThetaVsP_lowW[0][0]->Fill(_e->pos_P(), _e->pos_theta());
     ThetaVsP_lowW[0][_e->sec()]->Fill(_e->pos_P(), _e->pos_theta());
@@ -315,4 +334,18 @@ void Histogram::Fill_Dt(const std::shared_ptr<Delta_T>& dt) {
 
 void Histogram::Fill_Dt(const std::shared_ptr<Delta_T>& dt, int part) {
   deltaT_proton[1]->Fill(dt->mom(part), dt->dt_P(part));
+}
+
+void Histogram::Fill_pi0(const std::shared_ptr<Reaction>& _e) {
+  if (_e->pi0_mass() < 0.0001) return;
+  short sec = _e->sec();
+  short pos_det = _e->pos_det();
+  mass_pi0_hist[0][0]->Fill(_e->pi0_mass());
+  if ((sec > 0 && sec < num_sectors) || pos_det != -1) {
+    mass_pi0_hist[0][sec]->Fill(_e->pi0_mass());
+    if (_e->onePositive_at180_MM0()) {
+      mass_pi0_hist[1][0]->Fill(_e->pi0_mass());
+      mass_pi0_hist[1][sec]->Fill(_e->pi0_mass());
+    }
+  }
 }

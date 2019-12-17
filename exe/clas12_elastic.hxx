@@ -56,6 +56,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
     auto dt = std::make_shared<Delta_T>(data);
     auto cuts = std::make_shared<Cuts>(data, dt);
     if (!cuts->ElectronCuts()) continue;
+    _hists->Fill_SF(data);
     _hists->Fill_Dt(dt);
     // Make a reaction class from the data given
     auto event = std::make_shared<Reaction>(data, beam_energy);
@@ -68,7 +69,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
         event->SetOther(part);
       }
     }
-
+    _hists->Fill_pi0(event);
     if (event->onePositive_at180_MM0()) {
       total++;
       _hists->Fill_Sparce(event);

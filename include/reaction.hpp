@@ -25,6 +25,7 @@ class Reaction {
   std::unique_ptr<TLorentzVector> _prot = nullptr;
   std::vector<std::unique_ptr<TLorentzVector>> _pos;
   std::vector<std::unique_ptr<TLorentzVector>> _other;
+  std::vector<std::shared_ptr<TLorentzVector>> _photons;
 
   bool _hasE = false;
   bool _hasPos = false;
@@ -41,6 +42,7 @@ class Reaction {
 
   float _MM = NAN;
   float _MM2 = NAN;
+  float _pi0_mass = NAN;
 
   float _W = NAN;
   float _Q2 = NAN;
@@ -57,6 +59,8 @@ class Reaction {
   void SetOther(int i);
 
   void CalcMissMass();
+  void CalcMassPi0();
+  float pi0_mass();
   float MM();
   float MM2();
 
@@ -87,7 +91,7 @@ class Reaction {
     double num = v * sin(_elec->Theta());
     double den = (v * cos(_elec->Theta()) - v);
 
-    // std::cout << -(atan(num / den) * RAD2DEG) << std::endl;
+    // std::cout << -((atan(num / den) * RAD2DEG) / 2.0) - (_pos.front()->Theta() * RAD2DEG) << std::endl;
 
     return -(atan(num / den) * RAD2DEG);
   }

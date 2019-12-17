@@ -23,6 +23,9 @@ using TH1D_ptr = std::shared_ptr<TH1D>;
 
 class Histogram {
  protected:
+  enum detector { both, forward, central };
+  enum sector { all, one, two, three, four, five };
+
   std::mutex mutex;
   std::shared_ptr<TFile> RootOutputFile;
   std::shared_ptr<TCanvas> def;
@@ -46,6 +49,7 @@ class Histogram {
 
   static const short NUM_DET = 3;
 
+  TH2D_ptr sf_hist = std::make_shared<TH2D>("SF", "SF", 500, 0, 10.5, 500, 0, 1);
   // Kinematics
   TH1D_ptr W_hist_all_events[num_sectors];
   TH1D_ptr W_hist_1pos[num_sectors];
@@ -70,6 +74,7 @@ class Histogram {
   TH1D_ptr Phie_Phip_hist[NUM_DET][num_sectors];
 
   TH1D_ptr MissingMass[num_sectors];
+  TH1D_ptr mass_pi0_hist[2][num_sectors];
 
   TH2D_ptr deltaT_proton[2];
 
@@ -88,9 +93,13 @@ class Histogram {
   void Fill_MomVsBeta(const std::shared_ptr<Reaction>& _e);
   void Write_MomVsBeta();
 
+  void Fill_SF(const std::shared_ptr<Branches12>& _d);
+  void Write_SF();
+
   void Fill_Sparce(const std::shared_ptr<Reaction>& _e);
   void Fill_Dt(const std::shared_ptr<Delta_T>& dt);
   void Fill_Dt(const std::shared_ptr<Delta_T>& dt, int part);
+  void Fill_pi0(const std::shared_ptr<Reaction>& _e);
 
   //
   void Write();

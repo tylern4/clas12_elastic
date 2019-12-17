@@ -8,7 +8,7 @@
 Reaction::Reaction(const std::shared_ptr<Branches12>& data, float beam_energy) {
   _data = data;
   _beam = std::make_unique<TLorentzVector>();
-  _beam_energy = beam_energy;  // atof(getenv("CLAS12_E"));
+  _beam_energy = beam_energy;
 
   _beam->SetPxPyPzE(0.0, 0.0, sqrt(_beam_energy * _beam_energy - MASS_E * MASS_E), _beam_energy);
 
@@ -16,7 +16,6 @@ Reaction::Reaction(const std::shared_ptr<Branches12>& data, float beam_energy) {
   _target = std::make_unique<TLorentzVector>(0.0, 0.0, 0.0, MASS_P);
   _elec = std::make_unique<TLorentzVector>();
   this->SetElec();
-  _prot = std::make_unique<TLorentzVector>();
 }
 
 Reaction::~Reaction() {}
@@ -65,19 +64,22 @@ bool Reaction::PosStats() {
 void Reaction::SetOther(int i) {
   _numOther++;
   _hasOther = true;
-  if (_data->charge(i) == 0) return;
-  _other.push_back(std::make_unique<TLorentzVector>());
-  _other.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), mass[_data->pid(i)]);
+  if (_data->charge(i) != 0) {
+    _other.push_back(std::make_unique<TLorentzVector>());
+    _other.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), mass[_data->pid(i)]);
+  }
+  if (_data->pid(i) == PHOTON) {
+    _photons.push_back(std::make_unique<TLorentzVector>());
+    _photons.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), 0);
+  }
 }
 
 void Reaction::CalcMissMass() {
-  if (_pos.size() > 0) *_prot = *_pos.front();
-  if (_prot != nullptr) {
+  if (_pos.size() > 0) {
     auto mm = std::make_unique<TLorentzVector>();
     *mm += (*_gamma + *_target);
-    *mm -= *_prot;
-    // for (auto& _o : _other) *mm -= *_o;
-    // for (auto& _p : _pos) *mm -= *_p;
+    // for (auto& _p : _photons) *mm -= *_p;
+    for (auto& _p : _pos) *mm -= *_p;
     _MM = mm->M();
     _MM2 = mm->M2();
   }
@@ -90,4 +92,18 @@ float Reaction::MM() {
 float Reaction::MM2() {
   if (_MM2 != _MM2) CalcMissMass();
   return _MM2;
+}
+
+void Reaction::CalcMassPi0() {
+  _pi0_mass = 0;
+  if (_photons.size() == 2) {
+    auto mass = std::make_unique<TLorentzVector>();
+    for (auto& _p : _photons) *mass -= *_p;
+    _pi0_mass = mass->M();
+  }
+}
+
+float Reaction::pi0_mass() {
+  if (_pi0_mass != _pi0_mass) CalcMassPi0();
+  return _pi0_mass;
 }

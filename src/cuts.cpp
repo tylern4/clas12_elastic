@@ -14,15 +14,13 @@ bool Cuts::ElectronCuts() {
   bool _elec = true;
   // Number of good particles is greater than 0
   // So that we can check at(0) without errors
-  _elec &= (_data->gpart() > 0);
-  if (!_elec) return false;
+  if (_data->gpart() == 0) return false;
 
+  _elec &= (_data->gpart() < 20);
   _elec &= (_data->charge(0) == NEGATIVE);
-  _elec &= (_data->pid(0) == ELECTRON);
-  _elec &= (_data->beta(0) > 0.05);
-  //_elec &= !std::isnan(_data->cc_nphe_tot(0));
-  _elec &= (_data->ec_tot_energy(0) / _data->p(0) > 0.2);
-  _elec &= (_data->ec_tot_energy(0) / _data->p(0) < 0.3);
+  _elec &= !std::isnan(_data->cc_nphe_tot(0));
+  //_elec &= (_data->pid(0) == ELECTRON);
+  _elec &= (abs(_data->chi2pid(0)) < 3);
 
   return _elec;
 }
@@ -39,7 +37,8 @@ bool Cuts::IsProton(int i) {
   if (_data->gpart() <= i) return false;
   bool _proton = true;
   _proton &= (_data->charge(i) == POSITIVE);
-  _proton = (_data->p(i) > 1.0);
+  //_proton &= _data->pid(i) == PROTON;
+  //_proton = (_data->p(i) > 1.0);
   if (!std::isnan(_dt->dt_P(i))) _proton &= (abs(_dt->dt_P(i)) < 0.5);
   // if (!std::isnan(_dt->dt_ctof_P(i))) _proton &= (abs(_dt->dt_ctof_P(i)) < 0.2);
   return _proton;
