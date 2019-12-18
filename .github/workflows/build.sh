@@ -1,12 +1,8 @@
 #!/bin/bash
 
-pwd
-ls -l
+set -e
 
-cd current
 mkdir build
 cd build
 cmake ..
 make -j2
-
-ls -l
