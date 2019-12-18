@@ -24,11 +24,20 @@ using TH1D_ptr = std::shared_ptr<TH1D>;
 
 class Histogram {
  protected:
-  enum detector { both, forward, central };
-  enum sector { all, one, two, three, four, five };
+  static const short NUM_SECTORS = 7;
+  static const short NUM_DET = 3;
+  static const short CUTS = 2;
+  // enum to easily access detector and sector information
+  enum cuts { before_cut, after_cut };
+  enum detector { both_detectors, forward, central };
+  enum sector { all_sectors, one, two, three, four, five };
 
+  // Mutex needed for filling some histograms
   std::mutex mutex;
+
+  // Output file
   std::shared_ptr<TFile> RootOutputFile;
+  // Default canvas
   std::shared_ptr<TCanvas> def;
 
   int bins = 500;
@@ -40,7 +49,6 @@ class Histogram {
   double p_max = 10.6;
 
   double zero = 0.0;
-  static const short num_sectors = 7;
 
   static const short NUM_DIM = 3;
   //// W, Q2, sector
@@ -48,36 +56,33 @@ class Histogram {
   double sparce_xmin[NUM_DIM] = {zero, zero, 0};
   double sparce_xmax[NUM_DIM] = {w_max, q2_max, 6};
 
-  static const short NUM_DET = 3;
-
   TH2D_ptr sf_hist = std::make_shared<TH2D>("SF", "SF", 500, 0, 10.5, 500, 0, 1);
   // Kinematics
-  TH1D_ptr W_hist_all_events[num_sectors];
-  TH1D_ptr W_hist_1pos[num_sectors];
-  TH1D_ptr W_hist_1pos_0charge[num_sectors];
-  TH1D_ptr W_hist_1pos_noOther[num_sectors];
-  TH1D_ptr W_hist_1pos_at180[NUM_DET][num_sectors];
-  TH1D_ptr W_hist_1pos_at180_MM[NUM_DET][num_sectors];
+  TH1D_ptr W_hist_all_events[NUM_SECTORS];
+  TH1D_ptr W_hist_1pos[NUM_SECTORS];
+  TH1D_ptr W_hist_1pos_0charge[NUM_SECTORS];
+  TH1D_ptr W_hist_1pos_noOther[NUM_SECTORS];
+  TH1D_ptr W_hist_1pos_at180[NUM_DET][NUM_SECTORS];
+  TH1D_ptr W_hist_1pos_at180_MM[NUM_DET][NUM_SECTORS];
 
-  TH2D_ptr W_vs_q2_all_events[num_sectors];
-  TH2D_ptr W_vs_q2_1pos[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_0charge[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_noOther[num_sectors];
-  TH2D_ptr W_vs_q2_1pos_at180[NUM_DET][num_sectors];
-  TH2D_ptr W_vs_q2_1pos_at180_MM[NUM_DET][num_sectors];
+  TH2D_ptr W_vs_q2_all_events[NUM_SECTORS];
+  TH2D_ptr W_vs_q2_1pos[NUM_SECTORS];
+  TH2D_ptr W_vs_q2_1pos_0charge[NUM_SECTORS];
+  TH2D_ptr W_vs_q2_1pos_noOther[NUM_SECTORS];
+  TH2D_ptr W_vs_q2_1pos_at180[NUM_DET][NUM_SECTORS];
+  TH2D_ptr W_vs_q2_1pos_at180_MM[NUM_DET][NUM_SECTORS];
 
-  TH2D_ptr ThetaVsP[NUM_DET][num_sectors];
-  TH2D_ptr ThetaVsPCalc[NUM_DET][num_sectors];
-  TH2D_ptr ThetaVsP_lowW[NUM_DET][num_sectors];
-  TH2D_ptr MomVsBeta[NUM_DET][num_sectors];
+  TH2D_ptr ThetaVsP[NUM_DET][NUM_SECTORS];
+  TH2D_ptr ThetaVsPCalc[NUM_DET][NUM_SECTORS];
+  TH2D_ptr ThetaVsP_lowW[NUM_DET][NUM_SECTORS];
+  TH2D_ptr MomVsBeta[NUM_DET][NUM_SECTORS];
 
-  TH2D_ptr Phie_vs_Phip[NUM_DET][num_sectors];
-  TH1D_ptr Phie_Phip_hist[NUM_DET][num_sectors];
+  TH2D_ptr Phie_vs_Phip[NUM_DET][NUM_SECTORS];
+  TH1D_ptr Phie_Phip_hist[NUM_DET][NUM_SECTORS];
 
-  TH1D_ptr MissingMass[num_sectors];
-  TH1D_ptr mass_pi0_hist[2][num_sectors];
-
-  TH2D_ptr deltaT_proton[2];
+  TH1D_ptr MissingMass[NUM_SECTORS];
+  TH1D_ptr mass_pi0_hist[CUTS][NUM_SECTORS];
+  TH2D_ptr deltaT_proton[CUTS];
 
   std::shared_ptr<THnSparse> Nsparce;
 
