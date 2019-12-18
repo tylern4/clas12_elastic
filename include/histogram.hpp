@@ -5,6 +5,7 @@
 
 #ifndef HIST_H_GUARD
 #define HIST_H_GUARD
+#include <mutex>
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
