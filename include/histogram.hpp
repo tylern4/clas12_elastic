@@ -5,6 +5,7 @@
 
 #ifndef HIST_H_GUARD
 #define HIST_H_GUARD
+#include <mutex>
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
@@ -49,7 +50,15 @@ class Histogram {
 
   static const short NUM_DET = 3;
 
+  static const short num_cuts = 2;
+  std::string cut_name[num_cuts] = {"_Without_Cut", " "};
   TH2D_ptr sf_hist = std::make_shared<TH2D>("SF", "SF", 500, 0, 10.5, 500, 0, 1);
+  TH1D_ptr vz_position[num_cuts];
+  TH2D_ptr pcal_sec[num_cuts];
+  TH2D_ptr dcr1_sec[num_cuts];
+  TH2D_ptr dcr2_sec[num_cuts];
+  TH2D_ptr dcr3_sec[num_cuts];
+  TH2D_ptr EC_sampling_fraction[num_cuts];
   // Kinematics
   TH1D_ptr W_hist_all_events[num_sectors];
   TH1D_ptr W_hist_1pos[num_sectors];
@@ -95,7 +104,11 @@ class Histogram {
 
   void Fill_SF(const std::shared_ptr<Branches12>& _d);
   void Write_SF();
+  void makeHists_electron_cuts();
+  void FillHists_electron_cuts(const std::shared_ptr<Branches12>& _d);
+  void FillHists_electron_with_cuts(const std::shared_ptr<Branches12>& _d);
 
+  void Write_Electron_cuts();
   void Fill_Sparce(const std::shared_ptr<Reaction>& _e);
   void Fill_Dt(const std::shared_ptr<Delta_T>& dt);
   void Fill_Dt(const std::shared_ptr<Delta_T>& dt, int part);

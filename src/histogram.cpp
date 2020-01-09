@@ -11,6 +11,7 @@ Histogram::Histogram(const std::string& output_file) {
 
   makeHists();
   Nsparce = std::make_shared<THnSparseD>("nsparce", "nsparce", 3, sparce_bins, sparce_xmin, sparce_xmax);
+  makeHists_electron_cuts();
 }
 
 Histogram::~Histogram() { this->Write(); }
@@ -29,6 +30,11 @@ void Histogram::Write() {
   Write_MomVsBeta();
   deltaT_proton[0]->Write();
   deltaT_proton[1]->Write();
+
+  std::cerr << BOLDBLUE << "Write_Electron_cuts()" << DEF << std::endl;
+  TDirectory* Electron_Cuts = RootOutputFile->mkdir("Electron_Cuts");
+  Electron_Cuts->cd();
+  Write_Electron_cuts();
 
   std::cout << BOLDBLUE << "Done Writing!!!" << DEF << std::endl;
 }
@@ -101,13 +107,74 @@ void Histogram::makeHists() {
     }
   }
 }
-
+void Histogram::makeHists_electron_cuts() {
+  for (short c = 0; c < num_cuts; c++) {
+    EC_sampling_fraction[c] = std::make_shared<TH2D>(Form("EC_sampling_fraction%1.12s", cut_name[c].c_str()),
+                                                     Form("EC_sampling_fraction%1.12s", cut_name[c].c_str()), bins,
+                                                     p_min, p_max, bins, zero, 1.0);
+    vz_position[c] = std::make_shared<TH1D>(Form("vz_position%1.12s", cut_name[c].c_str()),
+                                            Form("vz_position%1.12s", cut_name[c].c_str()), bins, -40, 40);
+    pcal_sec[c] = std::make_shared<TH2D>(Form("pcal_sec%1.12s", cut_name[c].c_str()),
+                                         Form("pcal_sec%1.12s", cut_name[c].c_str()), bins, -420, 420, bins, -420, 420);
+    dcr1_sec[c] = std::make_shared<TH2D>(Form("dcr1_sec%1.12s", cut_name[c].c_str()),
+                                         Form("dcr1_sec%1.12s", cut_name[c].c_str()), bins, -180, 180, bins, -180, 180);
+    dcr2_sec[c] = std::make_shared<TH2D>(Form("dcr2_sec%1.12s", cut_name[c].c_str()),
+                                         Form("dcr2_sec%1.12s", cut_name[c].c_str()), bins, -270, 270, bins, -270, 270);
+    dcr3_sec[c] = std::make_shared<TH2D>(Form("dcr3_sec%1.12s", cut_name[c].c_str()),
+                                         Form("dcr3_sec%1.12s", cut_name[c].c_str()), bins, -320, 320, bins, -320, 320);
+  }
+}
 void Histogram::Fill_SF(const std::shared_ptr<Branches12>& _d) {
   sf_hist->Fill(_d->p(0), _d->ec_tot_energy(0) / _d->p(0));
 }
+void Histogram::FillHists_electron_cuts(const std::shared_ptr<Branches12>& _d) {
+  vz_position[0]->Fill(_d->vz(0));
+  pcal_sec[0]->Fill(_d->ec_pcal_x(0), _d->ec_pcal_y(0));
+  dcr1_sec[0]->Fill(_d->dc_r1_x(0), _d->dc_r1_y(0));
+  dcr2_sec[0]->Fill(_d->dc_r2_x(0), _d->dc_r2_y(0));
+  dcr3_sec[0]->Fill(_d->dc_r3_x(0), _d->dc_r3_y(0));
+  EC_sampling_fraction[0]->Fill(_d->p(0), _d->ec_tot_energy(0) / _d->p(0));
+}
 
+void Histogram::FillHists_electron_with_cuts(const std::shared_ptr<Branches12>& _d) {
+  vz_position[1]->Fill(_d->vz(0));
+  pcal_sec[1]->Fill(_d->ec_pcal_x(0), _d->ec_pcal_y(0));
+  dcr1_sec[1]->Fill(_d->dc_r1_x(0), _d->dc_r1_y(0));
+  dcr2_sec[1]->Fill(_d->dc_r2_x(0), _d->dc_r2_y(0));
+  dcr3_sec[1]->Fill(_d->dc_r3_x(0), _d->dc_r3_y(0));
+  EC_sampling_fraction[1]->Fill(_d->p(0), _d->ec_tot_energy(0) / _d->p(0));
+}
 void Histogram::Write_SF() { sf_hist->Write(); }
+void Histogram::Write_Electron_cuts() {
+  for (short c = 0; c < num_cuts; c++) {
+    vz_position[c]->SetXTitle("vz (GeV)");
+    if (vz_position[c]->GetEntries()) vz_position[c]->Write();
+    pcal_sec[c]->SetXTitle("x/cm");
+    pcal_sec[c]->SetYTitle("y/cm");
+    pcal_sec[c]->SetOption("COLZ1");
+    if (pcal_sec[c]->GetEntries()) pcal_sec[c]->Write();
 
+    dcr1_sec[c]->SetXTitle("x/cm");
+    dcr1_sec[c]->SetYTitle("y/cm");
+    dcr1_sec[c]->SetOption("COLZ1");
+    if (dcr1_sec[c]->GetEntries()) dcr1_sec[c]->Write();
+
+    dcr2_sec[c]->SetXTitle("x/cm");
+    dcr2_sec[c]->SetYTitle("y/cm");
+    dcr2_sec[c]->SetOption("COLZ1");
+    if (dcr2_sec[c]->GetEntries()) dcr2_sec[c]->Write();
+
+    dcr3_sec[c]->SetXTitle("x/cm");
+    dcr3_sec[c]->SetYTitle("y/cm");
+    dcr3_sec[c]->SetOption("COLZ1");
+    if (dcr3_sec[c]->GetEntries()) dcr3_sec[c]->Write();
+
+    EC_sampling_fraction[c]->SetXTitle("Momentum (GeV)");
+    EC_sampling_fraction[c]->SetYTitle("Sampling Fraction");
+    EC_sampling_fraction[c]->SetOption("COLZ1");
+    EC_sampling_fraction[c]->Write();
+  }
+}
 void Histogram::Fill_Sparce(const std::shared_ptr<Reaction>& _e) {
   std::lock_guard<std::mutex> lk(mutex);
   double ret[NUM_DIM] = {_e->W(), _e->Q2(), static_cast<double>(_e->sec())};
