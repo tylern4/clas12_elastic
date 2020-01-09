@@ -108,20 +108,21 @@ void Histogram::makeHists() {
   }
 }
 void Histogram::makeHists_electron_cuts() {
-  for (short c = 0; c < num_cuts; c++) {
-    EC_sampling_fraction[c] = std::make_shared<TH2D>(Form("EC_sampling_fraction%1.12s", cut_name[c].c_str()),
-                                                     Form("EC_sampling_fraction%1.12s", cut_name[c].c_str()), bins,
-                                                     p_min, p_max, bins, zero, 1.0);
-    vz_position[c] = std::make_shared<TH1D>(Form("vz_position%1.12s", cut_name[c].c_str()),
-                                            Form("vz_position%1.12s", cut_name[c].c_str()), bins, -40, 40);
-    pcal_sec[c] = std::make_shared<TH2D>(Form("pcal_sec%1.12s", cut_name[c].c_str()),
-                                         Form("pcal_sec%1.12s", cut_name[c].c_str()), bins, -420, 420, bins, -420, 420);
-    dcr1_sec[c] = std::make_shared<TH2D>(Form("dcr1_sec%1.12s", cut_name[c].c_str()),
-                                         Form("dcr1_sec%1.12s", cut_name[c].c_str()), bins, -180, 180, bins, -180, 180);
-    dcr2_sec[c] = std::make_shared<TH2D>(Form("dcr2_sec%1.12s", cut_name[c].c_str()),
-                                         Form("dcr2_sec%1.12s", cut_name[c].c_str()), bins, -270, 270, bins, -270, 270);
-    dcr3_sec[c] = std::make_shared<TH2D>(Form("dcr3_sec%1.12s", cut_name[c].c_str()),
-                                         Form("dcr3_sec%1.12s", cut_name[c].c_str()), bins, -320, 320, bins, -320, 320);
+  for (auto&& cut : WithOrWithout) {
+    int c = cut.first;
+    EC_sampling_fraction[c] =
+        std::make_shared<TH2D>(Form("EC_sampling_fraction%s", cut.second.c_str()),
+                               Form("EC_sampling_fraction%s", cut.second.c_str()), bins, p_min, p_max, bins, zero, 1.0);
+    vz_position[c] = std::make_shared<TH1D>(Form("vz_position%s", cut.second.c_str()),
+                                            Form("vz_position%s", cut.second.c_str()), bins, -40, 40);
+    pcal_sec[c] = std::make_shared<TH2D>(Form("pcal_sec%s", cut.second.c_str()), Form("pcal_sec%s", cut.second.c_str()),
+                                         bins, -420, 420, bins, -420, 420);
+    dcr1_sec[c] = std::make_shared<TH2D>(Form("dcr1_sec%s", cut.second.c_str()), Form("dcr1_sec%s", cut.second.c_str()),
+                                         bins, -180, 180, bins, -180, 180);
+    dcr2_sec[c] = std::make_shared<TH2D>(Form("dcr2_sec%s", cut.second.c_str()), Form("dcr2_sec%s", cut.second.c_str()),
+                                         bins, -270, 270, bins, -270, 270);
+    dcr3_sec[c] = std::make_shared<TH2D>(Form("dcr3_sec%s", cut.second.c_str()), Form("dcr3_sec%s", cut.second.c_str()),
+                                         bins, -320, 320, bins, -320, 320);
   }
 }
 void Histogram::Fill_SF(const std::shared_ptr<Branches12>& _d) {
@@ -146,7 +147,8 @@ void Histogram::FillHists_electron_with_cuts(const std::shared_ptr<Branches12>& 
 }
 void Histogram::Write_SF() { sf_hist->Write(); }
 void Histogram::Write_Electron_cuts() {
-  for (short c = 0; c < num_cuts; c++) {
+  for (auto&& cut : WithOrWithout) {
+    int c = cut.first;
     vz_position[c]->SetXTitle("vz (GeV)");
     if (vz_position[c]->GetEntries()) vz_position[c]->Write();
     pcal_sec[c]->SetXTitle("x/cm");

@@ -49,16 +49,15 @@ class Histogram {
   double sparce_xmax[NUM_DIM] = {w_max, q2_max, 6};
 
   static const short NUM_DET = 3;
+  static const short NUM_CUT = 2;
 
-  static const short num_cuts = 2;
-  std::string cut_name[num_cuts] = {"_Without_Cut", " "};
   TH2D_ptr sf_hist = std::make_shared<TH2D>("SF", "SF", 500, 0, 10.5, 500, 0, 1);
-  TH1D_ptr vz_position[num_cuts];
-  TH2D_ptr pcal_sec[num_cuts];
-  TH2D_ptr dcr1_sec[num_cuts];
-  TH2D_ptr dcr2_sec[num_cuts];
-  TH2D_ptr dcr3_sec[num_cuts];
-  TH2D_ptr EC_sampling_fraction[num_cuts];
+  TH1D_ptr vz_position[NUM_CUT];
+  TH2D_ptr pcal_sec[NUM_CUT];
+  TH2D_ptr dcr1_sec[NUM_CUT];
+  TH2D_ptr dcr2_sec[NUM_CUT];
+  TH2D_ptr dcr3_sec[NUM_CUT];
+  TH2D_ptr EC_sampling_fraction[NUM_CUT];
   // Kinematics
   TH1D_ptr W_hist_all_events[num_sectors];
   TH1D_ptr W_hist_1pos[num_sectors];
