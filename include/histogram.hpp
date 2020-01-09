@@ -56,9 +56,8 @@ class Histogram {
   double sparce_xmin[NUM_DIM] = {zero, zero, 0};
   double sparce_xmax[NUM_DIM] = {w_max, q2_max, 6};
 
-  static const short NUM_DET = 3;
   static const short NUM_CUT = 2;
-  
+
   TH2D_ptr sf_hist = std::make_shared<TH2D>("SF", "SF", 500, 0, 10.5, 500, 0, 1);
   TH1D_ptr vz_position[NUM_CUT];
   TH2D_ptr pcal_sec[NUM_CUT];
