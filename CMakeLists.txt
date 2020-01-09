@@ -24,4 +24,3 @@ foreach(exe_file IN LISTS clas12_EXE)
     add_executable(${exe_name} ${exe_file})
     target_link_libraries(${exe_name} clas12lib ${ROOT_LIBRARIES})
 endforeach()
-

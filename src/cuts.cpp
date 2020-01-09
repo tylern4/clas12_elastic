@@ -14,15 +14,68 @@ bool Cuts::ElectronCuts() {
   bool _elec = true;
   // Number of good particles is greater than 0
   // So that we can check at(0) without errors
-  if (_data->gpart() == 0) return false;
+  _elec &= (_data->gpart() > 0);
+  if (!_elec) return false;
 
   _elec &= (_data->gpart() < 20);
+
   _elec &= (_data->charge(0) == NEGATIVE);
+  _elec &= (_data->pid(0) == ELECTRON);
+  //_elec &= (_data->beta(0) > 0.05);
+  _elec &= (_data->p(0) > 1.0);
+  _elec &= (2000 <= abs(_data->status(0)) && abs(_data->status(0)) < 4000);
+  _elec &= (_data->vz(0) > -7.9 && _data->vz(0) < 2.0);
   _elec &= !std::isnan(_data->cc_nphe_tot(0));
-  //_elec &= (_data->pid(0) == ELECTRON);
   _elec &= (abs(_data->chi2pid(0)) < 3);
+  _elec &= FiducialCuts();
 
   return _elec;
+}
+
+bool Cuts::FiducialCuts() {
+  bool _fid_cut = true;
+  short dc_sec = (_data->dc_sec(0) - 1);
+  float sin_dc_sec = sinf(dc_sec * ROTATE);
+  float cos_dc_sec = cosf(dc_sec * ROTATE);
+
+  float x_PCAL_rot = _data->ec_pcal_y(0) * sin_dc_sec + _data->ec_pcal_x(0) * cos_dc_sec;
+  float y_PCAL_rot = _data->ec_pcal_y(0) * cos_dc_sec - _data->ec_pcal_x(0) * sin_dc_sec;
+
+  float left_PCAL = (HEIGHT_PCAL - SLOPE * y_PCAL_rot);
+  float right_PCAL = (HEIGHT_PCAL + SLOPE * y_PCAL_rot);
+  float radius2_PCAL = X_SQUARE_PCAL - pow(y_PCAL_rot, 2);  // circle radius r^2 = x^2 +
+                                                            // y^2
+  _fid_cut &=
+      (x_PCAL_rot > left_PCAL && x_PCAL_rot > right_PCAL && pow(x_PCAL_rot, 2) > radius2_PCAL && x_PCAL_rot < 372);
+
+  if (!_fid_cut) return _fid_cut;  // If it fails pcal cut return before calculating DC cut
+
+  float x1_rot = _data->dc_r1_y(0) * sin_dc_sec + _data->dc_r1_x(0) * cos_dc_sec;
+  float y1_rot = _data->dc_r1_y(0) * cos_dc_sec - _data->dc_r1_x(0) * sin_dc_sec;
+  float left_r1 = (DCR1_HEIGHT - SLOPE * y1_rot);
+  float right_r1 = (DCR1_HEIGHT + SLOPE * y1_rot);
+  float radius2_DCr1 = DCR1_SQUARE - pow(y1_rot, 2);
+  _fid_cut &= (x1_rot > left_r1 && x1_rot > right_r1 && pow(x1_rot, 2) > radius2_DCr1);
+
+  if (!_fid_cut) return _fid_cut;
+
+  float x2_rot = _data->dc_r2_y(0) * sin_dc_sec + _data->dc_r2_x(0) * cos_dc_sec;
+  float y2_rot = _data->dc_r2_y(0) * cos_dc_sec - _data->dc_r2_x(0) * sin_dc_sec;
+  float left_r2 = (DCR2_HEIGHT - SLOPE * y2_rot);
+  float right_r2 = (DCR2_HEIGHT + SLOPE * y2_rot);
+  float radius2_DCr2 = DCR2_SQUARE - pow(y2_rot, 2);
+  _fid_cut &= (x2_rot > left_r2 && x2_rot > right_r2 && pow(x2_rot, 2) > radius2_DCr2);
+  if (!_fid_cut) return _fid_cut;
+
+  float x3_rot = _data->dc_r3_y(0) * sin_dc_sec + _data->dc_r3_x(0) * cos_dc_sec;
+  float y3_rot = _data->dc_r3_y(0) * cos_dc_sec - _data->dc_r3_x(0) * sin_dc_sec;
+  float left_r3 = (DCR3_HEIGHT - SLOPE * y3_rot);
+  float right_r3 = (DCR3_HEIGHT + SLOPE * y3_rot);
+  float radius2_DCr3 = DCR3_SQUARE - pow(y3_rot, 2);
+
+  _fid_cut &= (x3_rot > left_r3 && x3_rot > right_r3 && pow(x3_rot, 2) > radius2_DCr3);
+
+  return _fid_cut;
 }
 
 bool Cuts::IsPip(int i) {
