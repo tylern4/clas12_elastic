@@ -55,7 +55,7 @@ static std::unordered_map<int, std::string> detector_name = {{0, "both"}, {2, "i
 static std::unordered_map<int, std::string> cut_names = {
     {0, "all"}, {1, "1pos"}, {2, "1pos_at180"}, {3, "1pos_MM"}, {4, "1pos_at180_MM"}};
 static std::unordered_map<int, int> detector_fill = {{0, 0}, {2, 1}, {4, 2}};
-static std::unordered_map<int, std::string> WithOrWithout = {{0, "_Without_Cut"}, {1, "_With_Cut"}};
+static std::map<int, std::string> before_after_cut = {{0, "_before_cut"}, {1, "_after_cut"}};
 
 static const float phi_min_cut = 3.08;
 static const float phi_max_cut = 3.2;

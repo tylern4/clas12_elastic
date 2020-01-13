@@ -16,17 +16,22 @@ bool Cuts::ElectronCuts() {
   // So that we can check at(0) without errors
   _elec &= (_data->gpart() > 0);
   if (!_elec) return false;
+  //_elec &= !std::isnan(_data->cc_nphe_tot(0));
 
   _elec &= (_data->gpart() < 20);
-
   _elec &= (_data->charge(0) == NEGATIVE);
   _elec &= (_data->pid(0) == ELECTRON);
-  //_elec &= (_data->beta(0) > 0.05);
+  // Why 1.0 for minimumm momentum cut?
   _elec &= (_data->p(0) > 1.0);
-  _elec &= (2000 <= abs(_data->status(0)) && abs(_data->status(0)) < 4000);
+  _elec &= ((abs(_data->status(0)) >= 2000) && abs(_data->status(0)) < 4000);
   _elec &= (_data->vz(0) > -7.9 && _data->vz(0) < 2.0);
-  _elec &= !std::isnan(_data->cc_nphe_tot(0));
+  // Use the chi2pid instead of straight line cuts on SF
   _elec &= (abs(_data->chi2pid(0)) < 3);
+
+  // FiducialCuts is the slowest of the cuts because of all the calcuations
+  // If it already fails a different cut we will quit before
+  // calulating for the FiducialCuts to save time
+  if (!_elec) return _elec;
   _elec &= FiducialCuts();
 
   return _elec;
@@ -34,7 +39,9 @@ bool Cuts::ElectronCuts() {
 
 bool Cuts::FiducialCuts() {
   bool _fid_cut = true;
+  // DC sector never changes so get it once and store it to use all the time
   short dc_sec = (_data->dc_sec(0) - 1);
+  // Same with these values
   float sin_dc_sec = sinf(dc_sec * ROTATE);
   float cos_dc_sec = cosf(dc_sec * ROTATE);
 
@@ -43,28 +50,41 @@ bool Cuts::FiducialCuts() {
 
   float left_PCAL = (HEIGHT_PCAL - SLOPE * y_PCAL_rot);
   float right_PCAL = (HEIGHT_PCAL + SLOPE * y_PCAL_rot);
-  float radius2_PCAL = X_SQUARE_PCAL - pow(y_PCAL_rot, 2);  // circle radius r^2 = x^2 +
-                                                            // y^2
-  _fid_cut &=
-      (x_PCAL_rot > left_PCAL && x_PCAL_rot > right_PCAL && pow(x_PCAL_rot, 2) > radius2_PCAL && x_PCAL_rot < 372);
+  float radius2_PCAL = X_SQUARE_PCAL - (y_PCAL_rot * y_PCAL_rot);  // circle radius r^2 = x^2 + y^2
 
-  if (!_fid_cut) return _fid_cut;  // If it fails pcal cut return before calculating DC cut
+  // I do this to clean up what is happening and makse sure that the cuts are not ambiguous
+  _fid_cut &= (x_PCAL_rot > left_PCAL);
+  _fid_cut &= (x_PCAL_rot > right_PCAL);
+  _fid_cut &= (x_PCAL_rot * x_PCAL_rot > radius2_PCAL);
+  _fid_cut &= (x_PCAL_rot < 372);
+
+  // If it fails pcal cut return before calculating DC cut to save time
+  if (!_fid_cut) return _fid_cut;
 
   float x1_rot = _data->dc_r1_y(0) * sin_dc_sec + _data->dc_r1_x(0) * cos_dc_sec;
   float y1_rot = _data->dc_r1_y(0) * cos_dc_sec - _data->dc_r1_x(0) * sin_dc_sec;
   float left_r1 = (DCR1_HEIGHT - SLOPE * y1_rot);
   float right_r1 = (DCR1_HEIGHT + SLOPE * y1_rot);
-  float radius2_DCr1 = DCR1_SQUARE - pow(y1_rot, 2);
-  _fid_cut &= (x1_rot > left_r1 && x1_rot > right_r1 && pow(x1_rot, 2) > radius2_DCr1);
+  float radius2_DCr1 = DCR1_SQUARE - (y1_rot * y1_rot);
 
+  _fid_cut &= (x1_rot > left_r1);
+  _fid_cut &= (x1_rot > right_r1);
+  _fid_cut &= (x1_rot * x1_rot > radius2_DCr1);
+
+  // If it fails cut return before calculating cut to save time
   if (!_fid_cut) return _fid_cut;
 
   float x2_rot = _data->dc_r2_y(0) * sin_dc_sec + _data->dc_r2_x(0) * cos_dc_sec;
   float y2_rot = _data->dc_r2_y(0) * cos_dc_sec - _data->dc_r2_x(0) * sin_dc_sec;
   float left_r2 = (DCR2_HEIGHT - SLOPE * y2_rot);
   float right_r2 = (DCR2_HEIGHT + SLOPE * y2_rot);
-  float radius2_DCr2 = DCR2_SQUARE - pow(y2_rot, 2);
-  _fid_cut &= (x2_rot > left_r2 && x2_rot > right_r2 && pow(x2_rot, 2) > radius2_DCr2);
+  float radius2_DCr2 = DCR2_SQUARE - (y2_rot * y2_rot);
+
+  _fid_cut &= (x2_rot > left_r2);
+  _fid_cut &= (x2_rot > right_r2);
+  _fid_cut &= ((x2_rot * x2_rot) > radius2_DCr2);
+
+  // If it fails cut return before calculating cut to save time
   if (!_fid_cut) return _fid_cut;
 
   float x3_rot = _data->dc_r3_y(0) * sin_dc_sec + _data->dc_r3_x(0) * cos_dc_sec;
@@ -73,7 +93,9 @@ bool Cuts::FiducialCuts() {
   float right_r3 = (DCR3_HEIGHT + SLOPE * y3_rot);
   float radius2_DCr3 = DCR3_SQUARE - pow(y3_rot, 2);
 
-  _fid_cut &= (x3_rot > left_r3 && x3_rot > right_r3 && pow(x3_rot, 2) > radius2_DCr3);
+  _fid_cut &= (x3_rot > left_r3);
+  _fid_cut &= (x3_rot > right_r3);
+  _fid_cut &= ((x3_rot * x3_rot) > radius2_DCr3);
 
   return _fid_cut;
 }
