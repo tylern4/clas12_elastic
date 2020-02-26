@@ -86,24 +86,47 @@ void Reaction::CalcMissMass() {
 }
 
 float Reaction::MM() {
-  if (_MM != _MM) CalcMissMass();
+  if (isnan(_MM)) CalcMissMass();
   return _MM;
 }
 float Reaction::MM2() {
-  if (_MM2 != _MM2) CalcMissMass();
+  if (isnan(_MM2)) CalcMissMass();
   return _MM2;
 }
 
 void Reaction::CalcMassPi0() {
   _pi0_mass = 0;
-  if (_photons.size() == 2) {
+  if (_photons.size() > 1) {
     auto mass = std::make_unique<TLorentzVector>();
-    for (auto& _p : _photons) *mass -= *_p;
+    for (auto& _p : _photons) *mass += *_p;
     _pi0_mass = mass->M();
   }
 }
 
 float Reaction::pi0_mass() {
-  if (_pi0_mass != _pi0_mass) CalcMassPi0();
+  if (isnan(_pi0_mass)) CalcMassPi0();
   return _pi0_mass;
+}
+
+void Reaction::CalcMassPairs() {
+  if (_photons.size() >= 2) {
+    // Reverse photon vector
+    std::vector<std::shared_ptr<TLorentzVector>> r_photons(_photons.rbegin(), _photons.rend());
+    // For each photon
+    for (auto&& _p : _photons) {
+      // Remove last photon in reversed vector aka first photon now _p
+      r_photons.pop_back();
+      // For each photn in revered list
+      for (auto& _rp : r_photons) {
+        // Add together pair and get mass
+        auto mass = *_p + *_rp;
+        if (mass.M() > 0.01) _pair_mass.push_back(mass.M());
+      }
+    }
+  }
+}
+
+std::vector<float> Reaction::pair_mass() {
+  if (_pair_mass.size() == 0) CalcMassPairs();
+  return _pair_mass;
 }

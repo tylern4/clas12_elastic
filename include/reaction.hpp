@@ -43,6 +43,7 @@ class Reaction {
   float _MM = NAN;
   float _MM2 = NAN;
   float _pi0_mass = NAN;
+  std::vector<float> _pair_mass;
 
   float _W = NAN;
   float _Q2 = NAN;
@@ -61,6 +62,10 @@ class Reaction {
   void CalcMissMass();
   void CalcMassPi0();
   float pi0_mass();
+
+  void CalcMassPairs();
+  std::vector<float> pair_mass();
+
   float MM();
   float MM2();
 
