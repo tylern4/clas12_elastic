@@ -7,6 +7,8 @@
 #define PHYSICS_H_GUARD
 #include <TLorentzVector.h>
 #include "TROOT.h"
+#include <unordered_map>
+#include <map>
 #include "constants.hpp"
 
 namespace physics {
