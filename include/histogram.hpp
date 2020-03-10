@@ -90,7 +90,7 @@ class Histogram {
 
   TH1D_ptr MissingMass[NUM_SECTORS];
   TH1D_ptr mass_pi0_hist[CUTS][NUM_SECTORS];
-  TH1D_ptr mass_pairCalc_hist[CUTS][NUM_SECTORS];
+  TH1D_ptr mass_eta_hist[CUTS][NUM_SECTORS];
   TH2D_ptr deltaT_proton[CUTS];
 
   std::shared_ptr<THnSparse> Nsparce;

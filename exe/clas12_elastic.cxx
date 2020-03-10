@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
   ROOT::EnableThreadSafety();
   std::ios::sync_with_stdio(false);
 
-  int NUM_THREADS = 2;
+  int NUM_THREADS = 1;
   if (getenv("NUM_THREADS") != NULL) NUM_THREADS = atoi(getenv("NUM_THREADS"));
   if (NUM_THREADS > argc - NUM_THREADS) NUM_THREADS = 1;
 

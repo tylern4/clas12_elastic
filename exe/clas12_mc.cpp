@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
   // Need this to make sure root doesn't break
   ROOT::EnableThreadSafety();
 
-  int NUM_THREADS = 4;
+  int NUM_THREADS = 1;
   if (getenv("NUM_THREADS") != NULL) NUM_THREADS = atoi(getenv("NUM_THREADS"));
   if (NUM_THREADS > argc - NUM_THREADS) NUM_THREADS = 1;
 

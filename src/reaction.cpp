@@ -4,6 +4,7 @@
 /*	University Of South Carolina      */
 /**************************************/
 #include "reaction.hpp"
+#include "Math/VectorUtil.h"
 
 Reaction::Reaction(const std::shared_ptr<Branches12>& data, float beam_energy) {
   _data = data;
@@ -71,6 +72,7 @@ void Reaction::SetOther(int i) {
   if (_data->pid(i) == PHOTON) {
     _photons.push_back(std::make_unique<TLorentzVector>());
     _photons.back()->SetXYZM(_data->px(i), _data->py(i), _data->pz(i), 0);
+    //_photons.back()->SetPxPyPzE(_data->px(i), _data->py(i), _data->pz(i), _data->ec_tot_energy(i));
   }
 }
 
@@ -109,6 +111,7 @@ float Reaction::pi0_mass() {
 }
 
 void Reaction::CalcMassPairs() {
+  float _min_photon_E = 1.3;
   if (_photons.size() >= 2) {
     // Reverse photon vector
     std::vector<std::shared_ptr<TLorentzVector>> r_photons(_photons.rbegin(), _photons.rend());
@@ -118,9 +121,12 @@ void Reaction::CalcMassPairs() {
       r_photons.pop_back();
       // For each photn in revered list
       for (auto& _rp : r_photons) {
+        // Cut on minimum photon energy
+        if (_p->Energy() < _min_photon_E || _rp->Energy() < _min_photon_E) continue;
+        auto phi = _p->Angle(_rp->Vect());
+        if (phi < 0.1) continue;
         // Add together pair and get mass
-        auto mass = *_p + *_rp;
-        if (mass.M() > 0.01) _pair_mass.push_back(mass.M());
+        _pair_mass.push_back((*_p + *_rp).M());
       }
     }
   }

@@ -52,10 +52,10 @@ void Histogram::makeHists() {
     mass_pi0_hist[after_cut][sec] = std::make_shared<TH1D>(Form("mass_pi0_hist_aferPcuts_%d", sec),
                                                            Form("mass_pi0_hist_aferPcuts_%d", sec), bins, 0, 1.0);
 
-    mass_pairCalc_hist[before_cut][sec] = std::make_shared<TH1D>(
-        Form("mass_pairCalc_hist_%d", sec), Form("mass_pairCalc_hist_%d", sec), bins * 2, 0.0, 1.0);
-    mass_pairCalc_hist[after_cut][sec] = std::make_shared<TH1D>(
-        Form("mass_pairCalc_hist_aferPcuts_%d", sec), Form("mass_pairCalc_hist_aferPcuts_%d", sec), bins * 2, 0.0, 1.0);
+    mass_eta_hist[before_cut][sec] =
+        std::make_shared<TH1D>(Form("mass_eta_hist_%d", sec), Form("mass_eta_hist_%d", sec), (bins / 2), 0.0, 1.0);
+    mass_eta_hist[after_cut][sec] = std::make_shared<TH1D>(Form("mass_eta_hist_aferPcuts_%d", sec),
+                                                           Form("mass_eta_hist_aferPcuts_%d", sec), bins / 2, 0.0, 1.0);
 
     W_hist_all_events[sec] =
         std::make_shared<TH1D>(Form("W_hist_sec_%d", sec), Form("W_hist_sec_%d", sec), bins, zero, w_max);
@@ -316,11 +316,11 @@ void Histogram::Write_WvsQ2() {
     mass_pi0_hist[after_cut][i]->SetXTitle("Mass (GeV)");
     mass_pi0_hist[after_cut][i]->Write();
 
-    mass_pairCalc_hist[before_cut][i]->SetXTitle("Mass (GeV)");
-    mass_pairCalc_hist[before_cut][i]->Write();
+    mass_eta_hist[before_cut][i]->SetXTitle("Mass (GeV)");
+    mass_eta_hist[before_cut][i]->Write();
 
-    mass_pairCalc_hist[after_cut][i]->SetXTitle("Mass (GeV)");
-    mass_pairCalc_hist[after_cut][i]->Write();
+    mass_eta_hist[after_cut][i]->SetXTitle("Mass (GeV)");
+    mass_eta_hist[after_cut][i]->Write();
 
     W_hist_all_events[i]->SetXTitle("W (GeV)");
     W_hist_all_events[i]->Write();
@@ -429,12 +429,12 @@ void Histogram::Fill_pi0(const std::shared_ptr<Reaction>& _e) {
   short pos_det = _e->pos_det();
 
   for (auto&& m : _e->pair_mass()) {
-    mass_pairCalc_hist[before_cut][all_sectors]->Fill(m);
+    mass_eta_hist[before_cut][all_sectors]->Fill(m);
     if ((sec > 0 && sec < NUM_SECTORS) || pos_det != -1) {
-      mass_pairCalc_hist[before_cut][sec]->Fill(m);
+      mass_eta_hist[before_cut][sec]->Fill(m);
       if (_e->onePositive_at180_MM0()) {
-        mass_pairCalc_hist[after_cut][all_sectors]->Fill(m);
-        mass_pairCalc_hist[after_cut][sec]->Fill(m);
+        mass_eta_hist[after_cut][all_sectors]->Fill(m);
+        mass_eta_hist[after_cut][sec]->Fill(m);
       }
     }
   }
