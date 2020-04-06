@@ -7,7 +7,7 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 find_package(ROOT REQUIRED COMPONENTS RIO Net) #RooFit RooFitCore RooStats RootAuth
 include(${ROOT_USE_FILE})
 
-include_directories(include)
+include_directories("include")
 
 file(GLOB clas12lib_SRC
     "src/*.cpp"
