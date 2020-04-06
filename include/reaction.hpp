@@ -7,6 +7,7 @@
 #define REACTION_H_GUARD
 
 #include <iostream>
+#include <mutex>
 #include "TLorentzVector.h"
 #include "TVector3.h"
 #include "branches.hpp"
@@ -15,6 +16,7 @@
 
 class Reaction {
  protected:
+  std::mutex mutex;
   std::shared_ptr<Branches12> _data;
 
   double _beam_energy = 10.6;

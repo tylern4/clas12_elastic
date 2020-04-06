@@ -111,6 +111,7 @@ float Reaction::pi0_mass() {
 }
 
 void Reaction::CalcMassPairs() {
+  std::lock_guard<std::mutex> lk(mutex);
   float _min_photon_E = 1.5;
   if (_photons.size() >= 2) {
     // Reverse photon vector
@@ -123,6 +124,7 @@ void Reaction::CalcMassPairs() {
       for (auto& _rp : r_photons) {
         std::cout << _p->Px() << "," << _p->Py() << "," << _p->Pz() << "," << _p->E() << "," << _rp->Px() << ","
                   << _rp->Py() << "," << _rp->Pz() << "," << _rp->E() << std::endl;
+
         // Cut on minimum photon energy
         if (_p->Energy() < _min_photon_E || _rp->Energy() < _min_photon_E) continue;
         auto phi = _p->Angle(_rp->Vect());
