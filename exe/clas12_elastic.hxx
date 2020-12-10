@@ -16,20 +16,6 @@
 #include "histogram.hpp"
 #include "reaction.hpp"
 
-size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hists, int thread_id);
-size_t run_files(std::vector<std::string> inputs, const std::shared_ptr<Histogram> &hists, int thread_id);
-
-size_t run_files(std::vector<std::string> inputs, const std::shared_ptr<Histogram> &hists, int thread_id) {
-  // Called once for each thread
-  // Make a new chain to process for this thread
-  auto chain = std::make_shared<TChain>("clas12");
-  // Add every file to the chain
-  for (auto in : inputs) chain->Add(in.c_str());
-
-  // Run the function over each thread
-  return run(chain, hists, thread_id);
-}
-
 size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hists, int thread_id) {
   // Get the number of events in this thread
   size_t num_of_events = (int)_chain->GetEntries();
@@ -49,6 +35,7 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
   for (size_t current_event = 0; current_event < num_of_events; current_event++) {
     // Get current event
     _chain->GetEntry(current_event);
+
     // If we are the 0th thread print the progress of the thread every 1000 events
     if (thread_id == 0 && current_event % 10000 == 0)
       std::cerr << "\t" << (100 * current_event / num_of_events) << " %\r" << std::flush;

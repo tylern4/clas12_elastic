@@ -17,6 +17,7 @@ add_library(clas12lib STATIC ${clas12lib_SRC})
 
 file(GLOB clas12_EXE
     "exe/*.cxx"
+    "scripts/*.cxx"
 )
 
 foreach(exe_file IN LISTS clas12_EXE)

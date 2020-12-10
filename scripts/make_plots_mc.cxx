@@ -11,7 +11,7 @@
 #include <TStyle.h>
 #include <iostream>
 #include <string>
-#include "../include/constants.hpp"
+#include "constants.hpp"
 
 int make_plots_mc(std::string inFileName = "/Users/tylern/Desktop/show/clas12/test.root",
                   std::string mcFileName = "/Users/tylern/Desktop/show/clas12/test.root") {
@@ -57,3 +57,17 @@ int make_plots_mc(std::string inFileName = "/Users/tylern/Desktop/show/clas12/te
 
   return 0;
 }
+
+#if not defined(__CLING__)
+int main(int argc, char const *argv[]) {
+  if (argc < 2) {
+    std::cerr << "Not enough arguments" << std::endl;
+    std::cerr << "To Use:\t" << argv[0] << " data.root mc.root" << std::endl;
+    exit(1);
+  }
+
+  auto can = make_plots_mc(argv[1]);
+
+  return can;
+}
+#endif
