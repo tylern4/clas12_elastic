@@ -37,4 +37,7 @@ double deltat(double electron_vertex_time, double mass, double momentum, double 
   double relatavistic_beta = 1.0 / sqrt(1.0 + (mass / momentum) * (mass / momentum));
   return electron_vertex_time - vertex_time(sc_t, sc_r, relatavistic_beta);
 }
+
+float theta_calc_rad(const float &cosz) { return acos(cosz); }
+float phi_calc_rad(const float &cosx, const float &cosy) { return atan2(cosx, cosy); }
 }  // namespace physics

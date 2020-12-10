@@ -6,7 +6,7 @@
 #include "reaction.hpp"
 #include "Math/VectorUtil.h"
 
-Reaction::Reaction(const std::shared_ptr<Branches12>& data, float beam_energy) {
+Reaction::Reaction(const std::shared_ptr<Branches12>& data, const float& beam_energy) {
   _data = data;
   _beam = std::make_unique<TLorentzVector>();
   _beam_energy = beam_energy;

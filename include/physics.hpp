@@ -6,9 +6,9 @@
 #ifndef PHYSICS_H_GUARD
 #define PHYSICS_H_GUARD
 #include <TLorentzVector.h>
-#include "TROOT.h"
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
+#include "TROOT.h"
 #include "constants.hpp"
 
 namespace physics {
@@ -22,8 +22,8 @@ double W_calc(const TLorentzVector &e_mu, const TLorentzVector &e_mu_prime);
 double xb_calc(double Q2, double E_prime);
 // overload with 4 vectors instaed of other calculations
 double xb_calc(const TLorentzVector &e_mu, const TLorentzVector &e_mu_prime);
-double theta_calc(double cosz);
-double phi_calc(double cosx, double cosy);
+float theta_calc_rad(const float &cosz);
+float phi_calc_rad(const float &cosx, const float &cosy);
 
 double vertex_time(double sc_time, double sc_pathlength, double relatavistic_beta);
 double deltat(double electron_vertex_time, double mass, double momentum, double sc_t, double sc_r);

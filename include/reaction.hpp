@@ -54,7 +54,7 @@ class Reaction {
 
  public:
   Reaction(){};
-  Reaction(const std::shared_ptr<Branches12>& data, float beam_energy);
+  Reaction(const std::shared_ptr<Branches12>& data, const float& beam_energy);
   ~Reaction();
 
   bool PosStats();
@@ -75,21 +75,40 @@ class Reaction {
   inline float Q2() { return _Q2; }
   inline short sec() { return _data->dc_sec(0); }
   inline short det() { return abs(_data->status(0) / 1000); }
+
   inline float pos_beta() {
     if (_pos_beta.size() == 0) return NAN;
     return _pos_beta.front();
   }
+
   inline float pos_P() {
     if (_pos.size() == 0) return NAN;
     return _pos.front()->P();
   }
+
   inline short pos_det() {
     if (_pos_det.size() == 0) return -1;
     return detector_fill[_pos_det.front()];
   }
+
   inline float pos_theta() {
     if (_pos.size() == 0) return NAN;
     return _pos.front()->Theta() * RAD2DEG;
+  }
+
+  inline float pos_theta_rad() {
+    if (_pos.size() == 0) return NAN;
+    return _pos.front()->Theta();
+  }
+
+  inline float pos_phi() {
+    if (_pos.size() == 0) return NAN;
+    return _pos.front()->Phi() * RAD2DEG;
+  }
+
+  inline float pos_phi_rad() {
+    if (_pos.size() == 0) return NAN;
+    return _pos.front()->Phi();
   }
 
   inline float pos_theta_calc() {
