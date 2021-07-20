@@ -9,11 +9,11 @@ Analysis program for elastic events in the clas12 detector.
 ##### To Build
 
 ```shell
-git clone https://github.com/tylern4/clas12_elastic.git
-mkdir -p clas12_elastic/build
-cd clas12_elastic/build
-cmake .. 
-make
+git clone --recurse-submodules https://github.com/tylern4/clas12_elastic.git;
+mkdir -p clas12_elastic/build;
+cd clas12_elastic/build;
+cmake ..;
+make;
 ```
 
 
