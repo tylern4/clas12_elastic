@@ -251,6 +251,8 @@ class Branches12 {
   Branches12(const std::shared_ptr<TChain> &tree);
   Branches12(const std::shared_ptr<TChain> &tree, bool mc);
   ~Branches12(){};
+  inline int NRUN() { return _NRUN; }
+  inline int NEVENT() { return _NEVENT; }
   bool mc();
   void mc_branches();
   void init();

@@ -224,6 +224,8 @@ void Branches12::init() {
   _ft_hodo_radius = 0;
 
   _tree->SetBranchStatus("*", 0);
+  _tree->SetBranchAddress("run", &_NRUN);
+  _tree->SetBranchAddress("event", &_NEVENT);
   _tree->SetBranchAddress("pid", &_pid);
   _tree->SetBranchAddress("p", &_p);
   _tree->SetBranchAddress("p2", &_p2);
