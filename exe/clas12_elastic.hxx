@@ -8,6 +8,7 @@
 #define MAIN_H_GUARD
 
 #include <iostream>
+#include "QADB.h"
 #include "TFile.h"
 #include "TH1.h"
 #include "branches.hpp"
@@ -16,7 +17,8 @@
 #include "histogram.hpp"
 #include "reaction.hpp"
 
-size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hists, int thread_id) {
+size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hists,
+           const std::shared_ptr<QA::QADB> &_qa, int thread_id) {
   // Get the number of events in this thread
   size_t num_of_events = (int)_chain->GetEntries();
   float beam_energy = NAN;
@@ -44,7 +46,11 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
 
     auto dt = std::make_shared<Delta_T>(data);
     auto cuts = std::make_shared<Cuts>(data, dt);
+
+    if (!_qa->Golden(data->NRUN(), data->NEVENT())) continue;
+
     if (!cuts->ElectronCuts()) continue;
+
     _hists->Fill_SF(data);
     _hists->FillHists_electron_with_cuts(data);
 
@@ -61,6 +67,9 @@ size_t run(std::shared_ptr<TChain> _chain, const std::shared_ptr<Histogram> &_hi
         event->SetOther(part);
       }
     }
+
+    _qa->AccumulateCharge();
+
     _hists->Fill_pi0(event);
     if (event->onePositive_at180_MM0()) {
       total++;

@@ -8,6 +8,10 @@ find_package(ROOT REQUIRED COMPONENTS RIO Net) #RooFit RooFitCore RooStats RootA
 include(${ROOT_USE_FILE})
 
 include_directories("include")
+include_directories("external/clasqaDB/srcC/include")
+include_directories("external/clasqaDB/srcC/rapidjson/include")
+add_definitions(-DMULTI_THREADED)
+
 
 file(GLOB clas12lib_SRC
     "src/*.cpp"
